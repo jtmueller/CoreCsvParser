@@ -49,7 +49,7 @@ namespace TinyCsvParser.Test.Benchmarks
         public void LocalWeatherReadTest()
         {
             bool[] keepOrder = new bool[] { true, false };
-            int[] degreeOfParallelismList = new[] { 4, 3, 2, 1 };
+            int[] degreeOfParallelismList = new[] { 1, 2, 3, 4 };
 
             foreach (var order in keepOrder)
             {
