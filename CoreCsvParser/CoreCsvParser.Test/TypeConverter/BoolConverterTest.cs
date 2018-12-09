@@ -15,11 +15,11 @@ namespace CoreCsvParser.Test.TypeConverter
             get { return new BoolConverter(); }
         }
 
-        protected override (string, bool)[] SuccessTestData
+        protected override (string?, bool)[] SuccessTestData
         {
             get
             {
-                return new[] {
+                return new (string?, bool)[] {
                     ("true", true),
                     ("false", false),
                     ("True", true),
@@ -28,7 +28,7 @@ namespace CoreCsvParser.Test.TypeConverter
             }
         }
 
-        protected override string[] FailTestData
+        protected override string?[] FailTestData
         {
             get { return new[] { "a", string.Empty, "  ", null }; }
         }
@@ -42,18 +42,18 @@ namespace CoreCsvParser.Test.TypeConverter
             get { return new BoolConverter("ThisIsTrue", "ThisIsFalse", StringComparison.Ordinal); }
         }
 
-        protected override (string, bool)[] SuccessTestData
+        protected override (string?, bool)[] SuccessTestData
         {
             get
             {
-                return new[] {
+                return new (string?, bool)[] {
                     ("ThisIsTrue", true),
                     ("ThisIsFalse", false),
                 };
             }
         }
 
-        protected override string[] FailTestData
+        protected override string?[] FailTestData
         {
             get { return new[] { "a", string.Empty, "  ", null, "thisistrue", "thisisfalse" }; }
         }

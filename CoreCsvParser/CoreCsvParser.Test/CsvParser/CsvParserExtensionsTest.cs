@@ -15,8 +15,8 @@ namespace CoreCsvParser.Test.CsvParser
     {
         private class Person
         {
-            public string FirstName { get; set; }
-            public string LastName { get; set; }
+            public string? FirstName { get; set; }
+            public string? LastName { get; set; }
             public DateTime BirthDate { get; set; }
         }
 
@@ -30,7 +30,6 @@ namespace CoreCsvParser.Test.CsvParser
             }
         }
 
-
         [Test]
         public void ReadFromFile_null_Test()
         {
@@ -38,7 +37,9 @@ namespace CoreCsvParser.Test.CsvParser
             CsvPersonMapping csvMapper = new CsvPersonMapping();
             CsvParser<Person> csvParser = new CsvParser<Person>(csvParserOptions, csvMapper);
 
+#pragma warning disable CS8625 // Cannot convert null literal to non-nullable reference or unconstrained type parameter.
             Assert.Throws<ArgumentException>(() => csvParser.ReadFromFile(null, Encoding.UTF8));
+#pragma warning restore CS8625 // Cannot convert null literal to non-nullable reference or unconstrained type parameter.
         }
 
         [Test]

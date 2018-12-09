@@ -21,7 +21,7 @@ namespace System
             _options = options;
 
             _separator = (char)0;
-            _separatorString = String.Empty;
+            _separatorString = string.Empty;
         }
 
         public SpanSplitEnumerable(ReadOnlySpan<char> span, char separator, StringSplitOptions options = StringSplitOptions.None)
@@ -31,7 +31,7 @@ namespace System
             _options = options;
 
             _separators = Array.Empty<char>();
-            _separatorString = String.Empty;
+            _separatorString = string.Empty;
         }
 
         public SpanSplitEnumerable(ReadOnlySpan<char> span, string separatorString, StringSplitOptions options = StringSplitOptions.None)

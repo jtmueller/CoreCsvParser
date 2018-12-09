@@ -8,20 +8,20 @@ using CoreCsvParser.TypeConverter;
 namespace CoreCsvParser.Test.TypeConverter
 {
     [TestFixture]
-    public class SingleConverterTest : BaseConverterTest<Single>
+    public class SingleConverterTest : BaseConverterTest<float>
     {
-        protected override ITypeConverter<Single> Converter
+        protected override ITypeConverter<float> Converter
         {
             get { return new SingleConverter(); }
         }
 
-        protected override (string, Single)[] SuccessTestData
+        protected override (string?, float)[] SuccessTestData
         {
             get
             {
-                return new[] {
-                    (Single.MinValue.ToString("R"), Single.MinValue),
-                    (Single.MaxValue.ToString("R"), Single.MaxValue),
+                return new (string?, float)[] {
+                    (float.MinValue.ToString("R"), float.MinValue),
+                    (float.MaxValue.ToString("R"), float.MaxValue),
                     ("0", 0),
                     ("-1000", -1000),
                     ("1000", 1000),
@@ -35,7 +35,7 @@ namespace CoreCsvParser.Test.TypeConverter
             Assert.AreEqual(expected, actual, float.Epsilon);
         }
 
-        protected override string[] FailTestData
+        protected override string?[] FailTestData
         {
             get { return new[] { "a", string.Empty, "  ", null, Double.MinValue.ToString(), Double.MaxValue.ToString() }; }
         }

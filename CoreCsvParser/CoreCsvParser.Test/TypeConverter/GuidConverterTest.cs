@@ -15,17 +15,17 @@ namespace CoreCsvParser.Test.TypeConverter
             get { return new GuidConverter(); }
         }
 
-        protected override (string, Guid)[] SuccessTestData
+        protected override (string?, Guid)[] SuccessTestData
         {
             get
             {
-                return new[] {
+                return new (string?, Guid)[] {
                     ("02001000-0010-0000-0000-003200000000", Guid.Parse("02001000-0010-0000-0000-003200000000")),
                 };
             }
         }
 
-        protected override string[] FailTestData
+        protected override string?[] FailTestData
         {
             get { return new[] { "a", string.Empty, "  ", null }; }
         }

@@ -69,7 +69,7 @@ namespace CoreCsvParser.TypeConverter
                 throw new CsvTypeConverterNotRegisteredException(string.Format("No TypeConverter registered for Type {0}", targetType));
             }
 
-            return typeConverter as ITypeConverter<TTargetType>;
+            return (ITypeConverter<TTargetType>)typeConverter;
         }
     }
 }

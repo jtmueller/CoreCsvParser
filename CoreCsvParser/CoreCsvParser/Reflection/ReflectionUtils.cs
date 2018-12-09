@@ -22,7 +22,7 @@ namespace CoreCsvParser.Reflection
 
         private static MemberExpression GetMemberExpression<TEntity, TProperty>(Expression<Func<TEntity, TProperty>> expression)
         {
-            MemberExpression memberExpression = null;
+            MemberExpression? memberExpression = null;
             if (expression.Body.NodeType == ExpressionType.Convert)
             {
                 var body = (UnaryExpression)expression.Body;

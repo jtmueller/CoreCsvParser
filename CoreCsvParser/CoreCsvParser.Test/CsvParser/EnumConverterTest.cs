@@ -23,7 +23,7 @@ namespace CoreCsvParser.Test.CsvParser
         {
             public VehicleTypeEnum VehicleType { get; set; }
 
-            public string Name { get; set; }
+            public string? Name { get; set; }
         }
 
         private class CsvVehicleMapping : CsvMapping<Vehicle>

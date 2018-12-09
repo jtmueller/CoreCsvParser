@@ -15,11 +15,11 @@ namespace CoreCsvParser.Test.TypeConverter
             get { return new Int32Converter(); }
         }
 
-        protected override (string, int)[] SuccessTestData
+        protected override (string?, int)[] SuccessTestData
         {
             get
             {
-                return new[] {
+                return new (string?, int)[] {
                     (Int32.MinValue.ToString(), Int32.MinValue),
                     (Int32.MaxValue.ToString(), Int32.MaxValue),
                     ("0", 0),
@@ -29,7 +29,7 @@ namespace CoreCsvParser.Test.TypeConverter
             }
         }
 
-        protected override string[] FailTestData
+        protected override string?[] FailTestData
         {
             get { return new[] { "a", string.Empty, "  ", null }; }
         }

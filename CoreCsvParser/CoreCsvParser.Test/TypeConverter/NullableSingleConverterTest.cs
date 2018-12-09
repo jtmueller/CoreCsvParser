@@ -9,34 +9,31 @@ using CoreCsvParser.TypeConverter;
 namespace CoreCsvParser.Test.TypeConverter
 {
     [TestFixture]
-    public class NullableSingleConverterTest : BaseConverterTest<Single?>
+    public class NullableSingleConverterTest : BaseConverterTest<float?>
     {
-        protected override ITypeConverter<Single?> Converter
-        {
-            get { return new NullableSingleConverter(); }
-        }
+        protected override ITypeConverter<float?> Converter => new NullableSingleConverter();
 
-        protected override (string, Single?)[] SuccessTestData
+        protected override (string?, float?)[] SuccessTestData
         {
             get
             {
-                return new[] {
-                    (Single.MinValue.ToString("R"), Single.MinValue),
-                    (Single.MaxValue.ToString("R"), Single.MaxValue),
+                return new (string?, float?)[] {
+                    (float.MinValue.ToString("R"), float.MinValue),
+                    (float.MaxValue.ToString("R"), float.MaxValue),
                     ("0", 0),
                     ("-1000", -1000),
                     ("1000", 1000),
                     ("5e2", 500),
-                    (" ", default(Single?)),
-                    (null, default(Single?)),
-                    (string.Empty, default(Single?))
+                    (" ", default),
+                    (null, default),
+                    (string.Empty, default)
                 };
             }
         }
 
         public override void AssertAreEqual(float? expected, float? actual)
         {
-            if (expected == default(float?))
+            if (expected == default)
             {
                 Assert.AreEqual(expected, actual);
             }
@@ -46,16 +43,14 @@ namespace CoreCsvParser.Test.TypeConverter
             }
         }
 
-        protected override string[] FailTestData
-        {
-            get { return new[] { "a", Double.MinValue.ToString(), Double.MaxValue.ToString() }; }
-        }
+        protected override string?[] FailTestData =>
+            new[] { "a", double.MinValue.ToString(), double.MaxValue.ToString() };
     }
 
     [TestFixture]
     public class NullableSingleConverterWithFormatProviderTest : NullableSingleConverterTest
     {
-        protected override ITypeConverter<Single?> Converter
+        protected override ITypeConverter<float?> Converter
         {
             get { return new NullableSingleConverter(CultureInfo.InvariantCulture); }
         }
@@ -64,7 +59,7 @@ namespace CoreCsvParser.Test.TypeConverter
     [TestFixture]
     public class NullableSingleConverterWithFormatProviderAndNumberStyleTest : NullableSingleConverterTest
     {
-        protected override ITypeConverter<Single?> Converter
+        protected override ITypeConverter<float?> Converter
         {
             get { return new NullableSingleConverter(CultureInfo.InvariantCulture, NumberStyles.Float | NumberStyles.AllowThousands); }
         }

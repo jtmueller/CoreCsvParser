@@ -21,17 +21,17 @@ namespace CoreCsvParser.Test.TypeConverter
             get { return new EnumConverter<TestEnum>(false); }
         }
 
-        protected override (string, TestEnum)[] SuccessTestData
+        protected override (string?, TestEnum)[] SuccessTestData
         {
             get
             {
-                return new[] {
+                return new (string?, TestEnum)[] {
                     ("A", TestEnum.A),
                 };
             }
         }
 
-        protected override string[] FailTestData
+        protected override string?[] FailTestData
         {
             get { return new[] { "B", string.Empty, "a", null }; }
         }
@@ -45,18 +45,18 @@ namespace CoreCsvParser.Test.TypeConverter
             get { return new EnumConverter<TestEnum>(true); }
         }
 
-        protected override (string, TestEnum)[] SuccessTestData
+        protected override (string?, TestEnum)[] SuccessTestData
         {
             get
             {
-                return new[] {
+                return new (string?, TestEnum)[] {
                     ("A", TestEnum.A),
                     ("a", TestEnum.A),
                 };
             }
         }
 
-        protected override string[] FailTestData
+        protected override string?[] FailTestData
         {
             get { return new[] { "B", " ", string.Empty, null }; }
         }

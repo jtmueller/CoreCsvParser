@@ -9,51 +9,41 @@ using CoreCsvParser.TypeConverter;
 namespace CoreCsvParser.Test.TypeConverter
 {
     [TestFixture]
-    public class NullableInt64ConverterTest : BaseConverterTest<Int64?>
+    public class NullableInt64ConverterTest : BaseConverterTest<long?>
     {
-        protected override ITypeConverter<Int64?> Converter
-        {
-            get { return new NullableInt64Converter(); }
-        }
+        protected override ITypeConverter<long?> Converter => new NullableInt64Converter();
 
-        protected override (string, Int64?)[] SuccessTestData
+        protected override (string?, long?)[] SuccessTestData
         {
             get
             {
-                return new[] {
-                    (Int64.MinValue.ToString(), Int64.MinValue),
-                    (Int64.MaxValue.ToString(), Int64.MaxValue),
+                return new (string?, long?)[] {
+                    (long.MinValue.ToString(), long.MinValue),
+                    (long.MaxValue.ToString(), long.MaxValue),
                     ("0", 0),
                     ("-1000", -1000),
                     ("1000", 1000),
-                    (" ", default(Int64?)),
-                    (null, default(Int64?)),
-                    (string.Empty, default(Int64?))
+                    (" ", default),
+                    (null, default),
+                    (string.Empty, default)
                 };
             }
         }
 
-        protected override string[] FailTestData
-        {
-            get { return new[] { "a" }; }
-        }
+        protected override string?[] FailTestData => new[] { "a" };
     }
 
     [TestFixture]
     public class NullableInt64ConverterWithFormatProviderTest : NullableInt64ConverterTest
     {
-        protected override ITypeConverter<Int64?> Converter
-        {
-            get { return new NullableInt64Converter(CultureInfo.InvariantCulture); }
-        }
+        protected override ITypeConverter<long?> Converter =>
+            new NullableInt64Converter(CultureInfo.InvariantCulture);
     }
 
     [TestFixture]
     public class NullableInt64ConverterWithFormatProviderAndNumberStylesTest : NullableInt64ConverterTest
     {
-        protected override ITypeConverter<Int64?> Converter
-        {
-            get { return new NullableInt64Converter(CultureInfo.InvariantCulture, NumberStyles.Integer); }
-        }
+        protected override ITypeConverter<long?> Converter =>
+            new NullableInt64Converter(CultureInfo.InvariantCulture, NumberStyles.Integer);
     }
 }

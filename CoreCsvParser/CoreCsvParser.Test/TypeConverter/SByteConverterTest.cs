@@ -8,18 +8,18 @@ using CoreCsvParser.TypeConverter;
 namespace CoreCsvParser.Test.TypeConverter
 {
     [TestFixture]
-    public class SByteConverterTest : BaseConverterTest<SByte>
+    public class SByteConverterTest : BaseConverterTest<sbyte>
     {
-        protected override ITypeConverter<SByte> Converter
+        protected override ITypeConverter<sbyte> Converter
         {
             get { return new SByteConverter(); }
         }
 
-        protected override (string, SByte)[] SuccessTestData
+        protected override (string?, sbyte)[] SuccessTestData
         {
             get
             {
-                return new (string, SByte)[] {
+                return new (string?, sbyte)[] {
                     (SByte.MinValue.ToString(), SByte.MinValue),
                     (SByte.MaxValue.ToString(), SByte.MaxValue),
                     ("0", 0),
@@ -29,7 +29,7 @@ namespace CoreCsvParser.Test.TypeConverter
             }
         }
 
-        protected override string[] FailTestData
+        protected override string?[] FailTestData
         {
             get { return new[] { "a", string.Empty, "  ", null, "-129", "128" }; }
         }

@@ -12,7 +12,9 @@ namespace CoreCsvParser.TypeConverter
         {
             if (value.IsWhiteSpace())
             {
-                result = default(TTargetType);
+#pragma warning disable CS8625 // Cannot convert null literal to non-nullable reference or unconstrained type parameter.
+                result = default;
+#pragma warning restore CS8625 // Cannot convert null literal to non-nullable reference or unconstrained type parameter.
 
                 return false;
             }

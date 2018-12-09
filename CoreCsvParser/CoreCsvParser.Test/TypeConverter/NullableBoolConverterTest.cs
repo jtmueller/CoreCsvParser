@@ -15,20 +15,20 @@ namespace CoreCsvParser.Test.TypeConverter
             get { return new NullableBoolConverter(); }
         }
 
-        protected override (string, bool?)[] SuccessTestData
+        protected override (string?, bool?)[] SuccessTestData
         {
             get
             {
-                return new[] {
+                return new (string?, bool?)[] {
                     ("true", true),
                     ("false", false),
-                    (null, default(bool?)),
-                    (string.Empty, default(bool?)),
+                    (null, default),
+                    (string.Empty, default),
                 };
             }
         }
 
-        protected override string[] FailTestData
+        protected override string?[] FailTestData
         {
             get { return new[] { "a" }; }
         }

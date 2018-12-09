@@ -11,7 +11,7 @@ namespace CoreCsvParser.Test.TypeConverter
     [TestFixture]
     public class TypeConverterProviderTests
     {
-        TypeConverterProvider provider;
+        TypeConverterProvider? provider;
 
         [SetUp]
         public void SetUp()
@@ -27,7 +27,7 @@ namespace CoreCsvParser.Test.TypeConverter
         [Test]
         public void AddTypeRegistrationTest()
         {
-            var typeConverter = provider
+            var typeConverter = provider!
                 .Add(new EnumConverter<SomeEnum>())
                 .Resolve<SomeEnum>();
 
@@ -37,13 +37,13 @@ namespace CoreCsvParser.Test.TypeConverter
         [Test]
         public void PreventDuplicateTypeRegistrationTest()
         {
-            Assert.Throws<CsvTypeConverterAlreadyRegisteredException>(() => provider.Add(new Int32Converter()));
+            Assert.Throws<CsvTypeConverterAlreadyRegisteredException>(() => provider!.Add(new Int32Converter()));
         }
 
         [Test]
         public void ResolveTypeConverter_Registered_Test()
         {
-            var typeRegistration = provider.Resolve<Int16>();
+            var typeRegistration = provider!.Resolve<short>();
             
             Assert.AreEqual(typeof(Int16Converter), typeRegistration.GetType());
         }
@@ -51,7 +51,7 @@ namespace CoreCsvParser.Test.TypeConverter
         [Test]
         public void ResolveTypeConverter_NotRegistered_Test()
         {
-            Assert.Throws<CsvTypeConverterNotRegisteredException>(() => provider.Resolve<SomeEnum>());
+            Assert.Throws<CsvTypeConverterNotRegisteredException>(() => provider!.Resolve<SomeEnum>());
         }
 
     }

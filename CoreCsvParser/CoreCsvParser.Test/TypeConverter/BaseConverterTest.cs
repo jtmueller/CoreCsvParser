@@ -12,9 +12,9 @@ namespace CoreCsvParser.Test.TypeConverter
     {
         protected abstract ITypeConverter<TTargetType> Converter { get; }
 
-        protected abstract (string, TTargetType)[] SuccessTestData { get; }
+        protected abstract (string?, TTargetType)[] SuccessTestData { get; }
 
-        protected abstract string[] FailTestData { get; }
+        protected abstract string?[] FailTestData { get; }
 
         [Test]
         public void Success()

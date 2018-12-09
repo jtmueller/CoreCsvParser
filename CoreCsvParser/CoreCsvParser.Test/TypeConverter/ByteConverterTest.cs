@@ -8,27 +8,27 @@ using CoreCsvParser.TypeConverter;
 namespace CoreCsvParser.Test.TypeConverter
 {
     [TestFixture]
-    public class ByteConverterTest : BaseConverterTest<Byte>
+    public class byteConverterTest : BaseConverterTest<byte>
     {
-        protected override ITypeConverter<Byte> Converter
+        protected override ITypeConverter<byte> Converter
         {
             get { return new ByteConverter(); }
         }
 
-        protected override (string, Byte)[] SuccessTestData
+        protected override (string?, byte)[] SuccessTestData
         {
             get
             {
-                return new (string, Byte)[] {
-                    (Byte.MinValue.ToString(), Byte.MinValue),
-                    (Byte.MaxValue.ToString(), Byte.MaxValue),
+                return new (string?, byte)[] {
+                    (byte.MinValue.ToString(), byte.MinValue),
+                    (byte.MaxValue.ToString(), byte.MaxValue),
                     ("0", 0),
                     ("255", 255)
                 };
             }
         }
 
-        protected override string[] FailTestData
+        protected override string?[] FailTestData
         {
             get { return new[] { "a", string.Empty, "  ", null, "-1", "256" }; }
         }

@@ -7,7 +7,7 @@ using CoreCsvParser.Exceptions;
 
 namespace CoreCsvParser.TypeConverter
 {
-    public abstract class NullableInnerConverter<TTargetType> : NullableConverter<TTargetType?>
+    public abstract class NullableInnerConverter<TTargetType> : NullableConverter<TTargetType>
         where TTargetType : struct
     {
         private readonly NonNullableConverter<TTargetType> internalConverter;
@@ -19,12 +19,11 @@ namespace CoreCsvParser.TypeConverter
 
         protected override bool InternalConvert(ReadOnlySpan<char> value, out TTargetType? result)
         {
-            result = default(TTargetType?);
+            result = default;
 
             if (internalConverter.TryConvert(value, out TTargetType innerConverterResult))
             {
                 result = innerConverterResult;
-
                 return true;
             }
 

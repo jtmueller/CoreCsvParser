@@ -15,7 +15,7 @@ namespace CoreCsvParser.Test.Tokenizer
     {
         private class Person
         {
-            public string FirstNameWithLastName { get; set; }
+            public string? FirstNameWithLastName { get; set; }
             public DateTime BirthDate { get; set; }
         }
 
@@ -31,10 +31,10 @@ namespace CoreCsvParser.Test.Tokenizer
         [Test]
         public void QuotedStringTokenizerExampleTest()
         {
-            CsvParserOptions csvParserOptions = new CsvParserOptions(true, string.Empty, new QuotedStringTokenizer(','));
-            CsvReaderOptions csvReaderOptions = new CsvReaderOptions(Environment.NewLine);
-            CsvPersonMapping csvMapper = new CsvPersonMapping();
-            CsvParser<Person> csvParser = new CsvParser<Person>(csvParserOptions, csvMapper);
+            var csvParserOptions = new CsvParserOptions(true, string.Empty, new QuotedStringTokenizer(','));
+            var csvReaderOptions = new CsvReaderOptions(Environment.NewLine);
+            var csvMapper = new CsvPersonMapping();
+            var csvParser = new CsvParser<Person>(csvParserOptions, csvMapper);
 
             var stringBuilder = new StringBuilder()
                 .AppendLine("FirstNameLastName;BirthDate")

@@ -9,31 +9,31 @@ using CoreCsvParser.TypeConverter;
 namespace CoreCsvParser.Test.TypeConverter
 {
     [TestFixture]
-    public class NullableDecimalConverterTest : BaseConverterTest<Decimal?>
+    public class NullableDecimalConverterTest : BaseConverterTest<decimal?>
     {
-        protected override ITypeConverter<Decimal?> Converter
+        protected override ITypeConverter<decimal?> Converter
         {
             get { return new NullableDecimalConverter(); }
         }
 
-        protected override (string, Decimal?)[] SuccessTestData
+        protected override (string?, decimal?)[] SuccessTestData
         {
             get
             {
-                return new[] {
-                    (Decimal.MinValue.ToString(), Decimal.MinValue),
-                    (Decimal.MaxValue.ToString(), Decimal.MaxValue),
+                return new (string?, decimal?)[] {
+                    (decimal.MinValue.ToString(), decimal.MinValue),
+                    (decimal.MaxValue.ToString(), decimal.MaxValue),
                     ("0", 0),
                     ("-1000", -1000),
                     ("1000", 1000),
-                    (" ", default(Decimal?)),
-                    (null, default(Decimal?)),
-                    (string.Empty, default(Decimal?))
+                    (" ", default),
+                    (null, default),
+                    (string.Empty, default)
                 };
             }
         }
 
-        protected override string[] FailTestData
+        protected override string?[] FailTestData
         {
             get { return new[] { "a" }; }
         }

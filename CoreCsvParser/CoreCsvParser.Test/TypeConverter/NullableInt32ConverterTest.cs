@@ -9,22 +9,20 @@ using CoreCsvParser.TypeConverter;
 namespace CoreCsvParser.Test.TypeConverter
 {
     [TestFixture]
-    public class NullableInt32ConverterTest : BaseConverterTest<Int32?>
+    public class NullableInt32ConverterTest : BaseConverterTest<int?>
     {
-        protected override ITypeConverter<Int32?> Converter
-        {
-            get { return new NullableInt32Converter(); }
-        }
+        protected override ITypeConverter<int?> Converter =>
+            new NullableInt32Converter();
 
-        protected override (string, Int32?)[] SuccessTestData
+        protected override (string?, int?)[] SuccessTestData
         {
             get
             {
-                return new [] {
-                    (Int32.MinValue.ToString(), Int32.MinValue),
-                    (Int32.MaxValue.ToString(), Int32.MaxValue),
-                    (null, default(Int32?)),
-                    (string.Empty, default(Int32?)),
+                return new (string?, int?)[] {
+                    (int.MinValue.ToString(), int.MinValue),
+                    (int.MaxValue.ToString(), int.MaxValue),
+                    (null, default),
+                    (string.Empty, default),
                     ("0", 0),
                     ("-1000", -1000),
                     ("1000", 1000)
@@ -32,27 +30,20 @@ namespace CoreCsvParser.Test.TypeConverter
             }
         }
 
-        protected override string[] FailTestData
-        {
-            get { return new[] { "a" }; }
-        }
+        protected override string?[] FailTestData => new[] { "a" };
     }
 
     [TestFixture]
     public class NullableInt32ConverterWithFormatProviderTest : NullableInt32ConverterTest
     {
-        protected override ITypeConverter<Int32?> Converter
-        {
-            get { return new NullableInt32Converter(CultureInfo.InvariantCulture); }
-        }
+        protected override ITypeConverter<int?> Converter =>
+            new NullableInt32Converter(CultureInfo.InvariantCulture);
     }
 
     [TestFixture]
     public class NullableInt32ConverterWithFormatProviderAndNumberStylesTest : NullableInt32ConverterTest
     {
-        protected override ITypeConverter<Int32?> Converter
-        {
-            get { return new NullableInt32Converter(CultureInfo.InvariantCulture, NumberStyles.Integer); }
-        }
+        protected override ITypeConverter<int?> Converter =>
+            new NullableInt32Converter(CultureInfo.InvariantCulture, NumberStyles.Integer);
     }
 }

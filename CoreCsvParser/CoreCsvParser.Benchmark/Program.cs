@@ -13,9 +13,9 @@ namespace CoreCsvParser.Benchmark
     public class LocalWeatherData : IEquatable<LocalWeatherData>
     {
         public int RowNum { get; set; }
-        public string WBAN { get; set; }
+        public string? WBAN { get; set; }
         public DateTime Date { get; set; }
-        public string SkyCondition { get; set; }
+        public string? SkyCondition { get; set; }
 
         public bool Equals(LocalWeatherData other)
         {
@@ -31,7 +31,12 @@ namespace CoreCsvParser.Benchmark
                 && SkyCondition == other.SkyCondition;
         }
 
-        public override bool Equals(object obj) => Equals(obj as LocalWeatherData);
+        public override bool Equals(object obj)
+        {
+            if (obj is LocalWeatherData wd)
+                return Equals(wd);
+            return false;
+        }
 
         public override int GetHashCode()
         {

@@ -9,31 +9,31 @@ using CoreCsvParser.TypeConverter;
 namespace CoreCsvParser.Test.TypeConverter
 {
     [TestFixture]
-    public class NullableSByteConverterTest : BaseConverterTest<SByte?>
+    public class NullableSByteConverterTest : BaseConverterTest<sbyte?>
     {
-        protected override ITypeConverter<SByte?> Converter
+        protected override ITypeConverter<sbyte?> Converter
         {
             get { return new NullableSByteConverter(); }
         }
 
-        protected override (string, SByte?)[] SuccessTestData
+        protected override (string?, sbyte?)[] SuccessTestData
         {
             get
             {
-                return new (string, SByte?)[] {
+                return new (string?, sbyte?)[] {
                     (SByte.MinValue.ToString(), SByte.MinValue),
                     (SByte.MaxValue.ToString(), SByte.MaxValue),
                     ("0", 0),
                     ("-128", -128),
                     ("127", 127),
-                    (" ", default(SByte?)),
-                    (null, default(SByte?)),
-                    (string.Empty, default(SByte?))
+                    (" ", default),
+                    (null, default),
+                    (string.Empty, default)
                 };
             }
         }
 
-        protected override string[] FailTestData
+        protected override string?[] FailTestData
         {
             get { return new[] { "a", "-129", "128" }; }
         }
@@ -42,7 +42,7 @@ namespace CoreCsvParser.Test.TypeConverter
     [TestFixture]
     public class NullableSByteConverterWithFormatProviderTest : NullableSByteConverterTest
     {
-        protected override ITypeConverter<SByte?> Converter
+        protected override ITypeConverter<sbyte?> Converter
         {
             get { return new NullableSByteConverter(CultureInfo.InvariantCulture); }
         }
@@ -51,7 +51,7 @@ namespace CoreCsvParser.Test.TypeConverter
     [TestFixture]
     public class NullableSByteConverterWithFormatProviderAndNumberStylesTest : NullableSByteConverterTest
     {
-        protected override ITypeConverter<SByte?> Converter
+        protected override ITypeConverter<sbyte?> Converter
         {
             get { return new NullableSByteConverter(CultureInfo.InvariantCulture, NumberStyles.Integer); }
         }

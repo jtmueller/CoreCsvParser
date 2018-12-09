@@ -20,17 +20,17 @@ namespace CoreCsvParser.Mapping
         public CsvMappingResult(int rowIndex, int colIndex, string errorMessage)
         {
             RowIndex = rowIndex;
-            _result = default;
+            _result = new TEntity();
             Error = new CsvMappingException(rowIndex, colIndex, errorMessage);
             IsValid = false;
         }
 
         public readonly int RowIndex;
 
-        public readonly CsvMappingException Error;
+        public readonly CsvMappingException? Error;
 
         public TEntity Result => 
-            IsValid ? _result : throw new InvalidOperationException($"{Error.Message} (Row: {RowIndex}, Column: {Error.ColumnIndex})");
+            IsValid ? _result : throw new InvalidOperationException($"{Error?.Message} (Row: {RowIndex}, Column: {Error?.ColumnIndex})");
 
         public readonly bool IsValid;
 

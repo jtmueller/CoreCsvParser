@@ -11,35 +11,29 @@ namespace CoreCsvParser.Test.TypeConverter
     [TestFixture]
     public class NullableGuidConverterTest : BaseConverterTest<Guid?>
     {
-        protected override ITypeConverter<Guid?> Converter
-        {
-            get { return new NullableGuidConverter(); }
-        }
+        protected override ITypeConverter<Guid?> Converter =>
+            new NullableGuidConverter();
 
-        protected override (string, Guid?)[] SuccessTestData
+        protected override (string?, Guid?)[] SuccessTestData
         {
             get
             {
-                return new [] {
+                return new (string?, Guid?)[] {
                     ("02001000-0010-0000-0000-003200000000", Guid.Parse("02001000-0010-0000-0000-003200000000")),
-                    (null, default(Guid?)),
-                    (string.Empty, default(Guid?)),
+                    (null, default),
+                    (string.Empty, default),
                 };
             }
         }
 
-        protected override string[] FailTestData
-        {
-            get { return new[] { "a", Int32.MinValue.ToString(), Int32.MaxValue.ToString() }; }
-        }
+        protected override string?[] FailTestData =>
+            new[] { "a", int.MinValue.ToString(), int.MaxValue.ToString() };
     }
 
     [TestFixture]
     public class NullableGuidConverterWithFormatTest : NullableGuidConverterTest
     {
-        protected override ITypeConverter<Guid?> Converter
-        {
-            get { return new NullableGuidConverter("D"); }
-        }
+        protected override ITypeConverter<Guid?> Converter =>
+            new NullableGuidConverter("D");
     }
 }

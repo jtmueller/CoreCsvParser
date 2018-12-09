@@ -8,18 +8,18 @@ using CoreCsvParser.TypeConverter;
 namespace CoreCsvParser.Test.TypeConverter
 {
     [TestFixture]
-    public class UInt32ConverterTest : BaseConverterTest<UInt32>
+    public class UInt32ConverterTest : BaseConverterTest<uint>
     {
-        protected override ITypeConverter<UInt32> Converter
+        protected override ITypeConverter<uint> Converter
         {
             get { return new UInt32Converter(); }
         }
 
-        protected override (string, UInt32)[] SuccessTestData
+        protected override (string?, uint)[] SuccessTestData
         {
             get
             {
-                return new (string, UInt32)[] {
+                return new (string?, uint)[] {
                     (UInt32.MinValue.ToString(), UInt32.MinValue),
                     (UInt32.MaxValue.ToString(), UInt32.MaxValue),
                     ("0", 0),
@@ -28,7 +28,7 @@ namespace CoreCsvParser.Test.TypeConverter
             }
         }
 
-        protected override string[] FailTestData
+        protected override string?[] FailTestData
         {
             get { return new[] { "a", "-1000", string.Empty, "  ", null, Int32.MinValue.ToString() }; }
         }

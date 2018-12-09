@@ -16,52 +16,41 @@ namespace CoreCsvParser.Test.TypeConverter
             get { return new NullableTimeSpanConverter(); }
         }
 
-        protected override (string, TimeSpan?)[] SuccessTestData
+        protected override (string?, TimeSpan?)[] SuccessTestData
         {
             get
             {
-                return new[] {
+                return new (string?, TimeSpan?)[] {
                     (TimeSpan.MinValue.ToString(), TimeSpan.MinValue),
                     ("14", TimeSpan.FromDays(14)),
                     ("1:2:3", TimeSpan.FromHours(1).Add(TimeSpan.FromMinutes(2)).Add(TimeSpan.FromSeconds(3))),
-                    (" ", default(TimeSpan?)),
-                    (null, default(TimeSpan?)),
-                    (string.Empty, default(TimeSpan?))
+                    (" ", default),
+                    (null, default),
+                    (string.Empty, default)
                 };
             }
         }
 
-        protected override string[] FailTestData
-        {
-            get { return new[] { "a" }; }
-        }
+        protected override string?[] FailTestData => new[] { "a" };
     }
 
     [TestFixture]
     public class NullableTimeSpanConverterWithFormatProviderTest : NullableTimeSpanConverterTest
     {
-        protected override ITypeConverter<TimeSpan?> Converter
-        {
-            get { return new NullableTimeSpanConverter(string.Empty); }
-        }
+        protected override ITypeConverter<TimeSpan?> Converter => new NullableTimeSpanConverter(string.Empty);
     }
 
     [TestFixture]
     public class NullableTimeSpanConverterWithFormatAndFormatProviderTest : NullableTimeSpanConverterTest
     {
-        protected override ITypeConverter<TimeSpan?> Converter
-        {
-            get { return new NullableTimeSpanConverter(string.Empty, CultureInfo.InvariantCulture); }
-        }
+        protected override ITypeConverter<TimeSpan?> Converter =>
+            new NullableTimeSpanConverter(string.Empty, CultureInfo.InvariantCulture);
     }
 
     [TestFixture]
     public class NullableTimeSpanConverterWithFormatAndFormatProviderAndTimeSpanStyleTest : NullableTimeSpanConverterTest
     {
-        protected override ITypeConverter<TimeSpan?> Converter
-        {
-            get { return new NullableTimeSpanConverter(string.Empty, CultureInfo.InvariantCulture, TimeSpanStyles.None); }
-        }
+        protected override ITypeConverter<TimeSpan?> Converter =>
+            new NullableTimeSpanConverter(string.Empty, CultureInfo.InvariantCulture, TimeSpanStyles.None);
     }
-
 }

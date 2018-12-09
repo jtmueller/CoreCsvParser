@@ -15,18 +15,18 @@ namespace CoreCsvParser.Test.TypeConverter
             get { return new DateTimeConverter(); }
         }
 
-        protected override (string, DateTime)[] SuccessTestData
+        protected override (string?, DateTime)[] SuccessTestData
         {
             get
             {
-                return new[] {
+                return new (string?, DateTime)[] {
                     ("2014/01/01", new DateTime(2014, 1, 1)),
                     ("9999/12/31", new DateTime(9999, 12, 31)),
                 };
             }
         }
 
-        protected override string[] FailTestData
+        protected override string?[] FailTestData
         {
             get { return new[] { "a", string.Empty, "  ", null, "10000/01/01", "1753/01/32", "0/0/0" }; }
         }

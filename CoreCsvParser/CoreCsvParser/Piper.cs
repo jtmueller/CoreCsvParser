@@ -14,6 +14,8 @@ namespace CoreCsvParser
 {
     // https://blogs.msdn.microsoft.com/dotnet/2018/07/09/system-io-pipelines-high-performance-io-in-net/
 
+    // TODO: System.Buffers.SequenceReader
+
     internal class Piper
     {
         public static IObservable<T> ObserveFile<T>(string path, Encoding encoding, CsvParser<T> parser) where T : new()
@@ -208,8 +210,8 @@ namespace CoreCsvParser
     internal class LineObservable<T> : SubjectBase<T> where T : new()
     {
         private readonly List<IObserver<T>> _observers;
-        private IDisposable _resource;
-        private Action<IObserver<T>> _startAction;
+        private readonly IDisposable _resource;
+        private readonly Action<IObserver<T>> _startAction;
         private bool _disposed = false;
         private bool _started = false;
 
@@ -237,6 +239,9 @@ namespace CoreCsvParser
         public override void OnError(Exception error)
         {
             //Debug.WriteLine("OnError: {0}", error);
+            if (_disposed)
+                throw new ObjectDisposedException("LineObservable");
+
             foreach (var observer in _observers.ToArray())
             {
                 observer.OnError(error);
@@ -247,6 +252,9 @@ namespace CoreCsvParser
         public override void OnNext(T value)
         {
             //Debug.WriteLine("OnNext: {0}", value);
+            if (_disposed)
+                throw new ObjectDisposedException("LineObservable");
+
             foreach (var observer in _observers)
             {
                 observer.OnNext(value);
@@ -286,8 +294,6 @@ namespace CoreCsvParser
 
             _observers.Clear();
             _resource?.Dispose();
-            _startAction = null;
-            _resource = null;
             _disposed = true;
         }
     }

@@ -8,20 +8,20 @@ using CoreCsvParser.TypeConverter;
 namespace CoreCsvParser.Test.TypeConverter
 {
     [TestFixture]
-    public class DecimalConverterTest : BaseConverterTest<Decimal>
+    public class DecimalConverterTest : BaseConverterTest<decimal>
     {
-        protected override ITypeConverter<Decimal> Converter
+        protected override ITypeConverter<decimal> Converter
         {
             get { return new DecimalConverter(); }
         }
 
-        protected override (string, Decimal)[] SuccessTestData
+        protected override (string?, decimal)[] SuccessTestData
         {
             get
             {
-                return new[] {
-                    (Decimal.MinValue.ToString(), Decimal.MinValue),
-                    (Decimal.MaxValue.ToString(), Decimal.MaxValue),
+                return new (string?, decimal)[] {
+                    (decimal.MinValue.ToString(), decimal.MinValue),
+                    (decimal.MaxValue.ToString(), decimal.MaxValue),
                     ("0", 0),
                     ("-1000", -1000),
                     ("1000", 1000)
@@ -29,7 +29,7 @@ namespace CoreCsvParser.Test.TypeConverter
             }
         }
 
-        protected override string[] FailTestData
+        protected override string?[] FailTestData
         {
             get { return new[] { "a", string.Empty, "  ", null }; }
         }

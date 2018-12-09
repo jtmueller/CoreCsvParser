@@ -9,64 +9,60 @@ using CoreCsvParser.TypeConverter;
 namespace CoreCsvParser.Test.TypeConverter
 {
     [TestFixture]
-    public class NullableDoubleConverterTest : BaseConverterTest<Double?>
+    public class NullableDoubleConverterTest : BaseConverterTest<double?>
     {
-        protected override ITypeConverter<Double?> Converter
+        protected override ITypeConverter<double?> Converter
         {
             get { return new NullableDoubleConverter(); }
         }
 
-        protected override (string, Double?)[] SuccessTestData
+        protected override (string?, double?)[] SuccessTestData
         {
             get
             {
-                return new[] {
-                    (Double.MinValue.ToString("R"), Double.MinValue),
-                    (Double.MaxValue.ToString("R"), Double.MaxValue),
+                return new (string?, double?)[] {
+                    (double.MinValue.ToString("R"), double.MinValue),
+                    (double.MaxValue.ToString("R"), double.MaxValue),
                     ("0", 0),
                     ("-1000", -1000),
                     ("1000", 1000),
                     ("5e2", 500),
-                    (" ", default(Double?)),
-                    (null, default(Double?)),
-                    (string.Empty, default(Double?))
+                    (" ", default),
+                    (null, default),
+                    (string.Empty, default)
                 };
             }
         }
 
-        public override void AssertAreEqual(Double? expected, Double? actual)
+        public override void AssertAreEqual(double? expected, double? actual)
         {
-            if (expected == default(Double?))
+            if (expected == default)
             {
                 Assert.AreEqual(expected, actual);
             }
             else
             {
-                Assert.AreEqual(expected.Value, actual, Double.Epsilon);
+                Assert.AreEqual(expected.Value, actual, double.Epsilon);
             }
         }
 
-        protected override string[] FailTestData
+        protected override string?[] FailTestData
         {
-            get { return new[] { "a", }; }
+            get { return new[] { "a" }; }
         }
     }
 
     [TestFixture]
     public class NullableDoubleConverterWithFormatProviderTest : NullableDoubleConverterTest
     {
-        protected override ITypeConverter<Double?> Converter
-        {
-            get { return new NullableDoubleConverter(CultureInfo.InvariantCulture); }
-        }
+        protected override ITypeConverter<double?> Converter =>
+            new NullableDoubleConverter(CultureInfo.InvariantCulture); 
     }
 
     [TestFixture]
     public class NullableDoubleConverterWithFormatProviderAndNumberStyleTest : NullableDoubleConverterTest
     {
-        protected override ITypeConverter<Double?> Converter
-        {
-            get { return new NullableDoubleConverter(CultureInfo.InvariantCulture, NumberStyles.Float | NumberStyles.AllowThousands); }
-        }
+        protected override ITypeConverter<double?> Converter =>
+            new NullableDoubleConverter(CultureInfo.InvariantCulture, NumberStyles.Float | NumberStyles.AllowThousands);
     }
 }

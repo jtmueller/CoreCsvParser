@@ -8,20 +8,20 @@ using CoreCsvParser.TypeConverter;
 namespace CoreCsvParser.Test.TypeConverter
 {
     [TestFixture]
-    public class DoubleConverterTest : BaseConverterTest<Double>
+    public class DoubleConverterTest : BaseConverterTest<double>
     {
-        protected override ITypeConverter<Double> Converter
+        protected override ITypeConverter<double> Converter
         {
             get { return new DoubleConverter(); }
         }
 
-        protected override (string, Double)[] SuccessTestData
+        protected override (string?, double)[] SuccessTestData
         {
             get
             {
-                return new[] {
-                    (Double.MinValue.ToString("R"), Double.MinValue),
-                    (Double.MaxValue.ToString("R"), Double.MaxValue),
+                return new (string?, double)[] {
+                    (double.MinValue.ToString("R"), double.MinValue),
+                    (double.MaxValue.ToString("R"), double.MaxValue),
                     ("0", 0),
                     ("-1000", -1000),
                     ("1000", 1000),
@@ -30,12 +30,12 @@ namespace CoreCsvParser.Test.TypeConverter
             }
         }
 
-        public override void AssertAreEqual(Double expected, Double actual)
+        public override void AssertAreEqual(double expected, double actual)
         {
-            Assert.AreEqual(expected, actual, Double.Epsilon);
+            Assert.AreEqual(expected, actual, double.Epsilon);
         }
 
-        protected override string[] FailTestData
+        protected override string?[] FailTestData
         {
             get { return new[] { "a", string.Empty, "  ", null }; }
         }

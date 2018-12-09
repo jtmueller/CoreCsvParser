@@ -15,11 +15,11 @@ namespace CoreCsvParser.Test.TypeConverter
             get { return new UInt64Converter(); }
         }
 
-        protected override (string, ulong)[] SuccessTestData
+        protected override (string?, ulong)[] SuccessTestData
         {
             get
             {
-                return new (string, ulong)[] {
+                return new (string?, ulong)[] {
                     (UInt64.MinValue.ToString(), UInt64.MinValue),
                     (UInt64.MaxValue.ToString(), UInt64.MaxValue),
                     ("0", 0),
@@ -28,7 +28,7 @@ namespace CoreCsvParser.Test.TypeConverter
             }
         }
 
-        protected override string[] FailTestData
+        protected override string?[] FailTestData
         {
             get { return new[] { "a", "-1000", string.Empty, "  ", null, Int16.MinValue.ToString(), Int64.MinValue.ToString() }; }
         }

@@ -16,11 +16,11 @@ namespace CoreCsvParser.Test.TypeConverter
             get { return new TimeSpanConverter(); }
         }
 
-        protected override (string, TimeSpan)[] SuccessTestData
+        protected override (string?, TimeSpan)[] SuccessTestData
         {
             get
             {
-                return new[] {
+                return new (string?, TimeSpan)[] {
                     (TimeSpan.MinValue.ToString(), TimeSpan.MinValue),
                     ("14", TimeSpan.FromDays(14)),
                     ("1:2:3", TimeSpan.FromHours(1).Add(TimeSpan.FromMinutes(2)).Add(TimeSpan.FromSeconds(3))),
@@ -28,10 +28,7 @@ namespace CoreCsvParser.Test.TypeConverter
             }
         }
 
-        protected override string[] FailTestData
-        {
-            get { return new[] { "a", string.Empty, "  ", null }; }
-        }
+        protected override string?[] FailTestData => new[] { "a", string.Empty, "  ", null };
     }
 
     [TestFixture]
@@ -42,19 +39,16 @@ namespace CoreCsvParser.Test.TypeConverter
             get { return new TimeSpanConverter(@"hh\:mm\:ss"); }
         }
 
-        protected override (string, TimeSpan)[] SuccessTestData
+        protected override (string?, TimeSpan)[] SuccessTestData
         {
             get
             {
-                return new[] {
+                return new (string?, TimeSpan)[] {
                     ("01:02:03", TimeSpan.FromHours(1).Add(TimeSpan.FromMinutes(2)).Add(TimeSpan.FromSeconds(3))),
                 };
             }
         }
 
-        protected override string[] FailTestData
-        {
-            get { return new[] { "a", string.Empty, "  ", null }; }
-        }
+        protected override string?[] FailTestData => new[] { "a", string.Empty, "  ", null };
     }
 }

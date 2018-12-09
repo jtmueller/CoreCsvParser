@@ -9,22 +9,22 @@ using CoreCsvParser.TypeConverter;
 namespace CoreCsvParser.Test.TypeConverter
 {
     [TestFixture]
-    public class NullableInt16ConverterTest : BaseConverterTest<Int16?>
+    public class NullableInt16ConverterTest : BaseConverterTest<short?>
     {
-        protected override ITypeConverter<Int16?> Converter
+        protected override ITypeConverter<short?> Converter
         {
             get { return new NullableInt16Converter(); }
         }
 
-        protected override (string, Int16?)[] SuccessTestData
+        protected override (string?, short?)[] SuccessTestData
         {
             get
             {
-                return new (string, Int16?)[] {
+                return new (string?, short?)[] {
                     (Int16.MinValue.ToString(), Int16.MinValue),
                     (Int16.MaxValue.ToString(), Int16.MaxValue),
-                    (null, default(Int16?)),
-                    (string.Empty, default(Int16?)),
+                    (null, default),
+                    (string.Empty, default),
                     ("0", 0),
                     ("-1000", -1000),
                     ("1000", 1000)
@@ -32,16 +32,16 @@ namespace CoreCsvParser.Test.TypeConverter
             }
         }
 
-        protected override string[] FailTestData
+        protected override string?[] FailTestData
         {
-            get { return new[] { "a", Int32.MinValue.ToString(), Int32.MaxValue.ToString() }; }
+            get { return new[] { "a", int.MinValue.ToString(), int.MaxValue.ToString() }; }
         }
     }
 
     [TestFixture]
     public class NullableInt16ConverterWithFormatProviderTest : NullableInt16ConverterTest
     {
-        protected override ITypeConverter<Int16?> Converter
+        protected override ITypeConverter<short?> Converter
         {
             get { return new NullableInt16Converter(CultureInfo.InvariantCulture); }
         }
@@ -50,7 +50,7 @@ namespace CoreCsvParser.Test.TypeConverter
     [TestFixture]
     public class NullableInt16ConverterWithFormatProviderAndNumberStylesTest : NullableInt16ConverterTest
     {
-        protected override ITypeConverter<Int16?> Converter
+        protected override ITypeConverter<short?> Converter
         {
             get { return new NullableInt16Converter(CultureInfo.InvariantCulture, NumberStyles.Integer); }
         }

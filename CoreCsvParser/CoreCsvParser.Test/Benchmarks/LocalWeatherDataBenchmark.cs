@@ -17,9 +17,9 @@ namespace CoreCsvParser.Test.Benchmarks
     {
         public class LocalWeatherData
         {
-            public string WBAN { get; set; }
+            public string? WBAN { get; set; }
             public DateTime Date { get; set; }
-            public string SkyCondition { get; set; }
+            public string? SkyCondition { get; set; }
         }
 
         public class LocalWeatherDataMapper : CsvMapping<LocalWeatherData>

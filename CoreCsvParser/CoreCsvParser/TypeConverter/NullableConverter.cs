@@ -6,19 +6,20 @@ using CoreCsvParser.Exceptions;
 
 namespace CoreCsvParser.TypeConverter
 {
-    public abstract class NullableConverter<TTargetType> : BaseConverter<TTargetType>
+    public abstract class NullableConverter<TTargetType> : BaseConverter<TTargetType?> 
+        where TTargetType : struct
     {
-        public override bool TryConvert(ReadOnlySpan<char> value, out TTargetType result)
+        public override bool TryConvert(ReadOnlySpan<char> value, out TTargetType? result)
         {
             if (value.IsWhiteSpace())
             {
-                result = default(TTargetType);
+                result = default;
                 return true;
             }
 
             return InternalConvert(value, out result);
         }
 
-        protected abstract bool InternalConvert(ReadOnlySpan<char> value, out TTargetType result);
+        protected abstract bool InternalConvert(ReadOnlySpan<char> value, out TTargetType? result);
     }
 }

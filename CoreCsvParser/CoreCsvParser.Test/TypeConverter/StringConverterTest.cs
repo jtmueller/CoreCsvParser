@@ -8,29 +8,27 @@ using CoreCsvParser.TypeConverter;
 namespace CoreCsvParser.Test.TypeConverter
 {
     [TestFixture]
-    public class StringConverterTest : BaseConverterTest<String>
+    public class StringConverterTest : BaseConverterTest<string>
     {
-        protected override ITypeConverter<String> Converter
+        protected override ITypeConverter<string> Converter
         {
             get { return new StringConverter(); }
         }
 
-        protected override (string, String)[] SuccessTestData
+        protected override (string?, string)[] SuccessTestData
         {
             get
             {
-                return new[] {
+                return new (string?, string)[] {
                     (string.Empty, string.Empty),
                     (" ", " "),
                     ("Abc", "Abc"),
-                    (null, string.Empty) // spans can't be null, and null is evil
+                    (null, string.Empty)
                 };
             }
         }
 
-        protected override string[] FailTestData
-        {
-            get { return new String[] {  }; } // Should never fail, because values are passed through.
-        }
+        protected override string?[] FailTestData =>
+            new string[] {  }; // Should never fail, because values are passed through.
     }
 }

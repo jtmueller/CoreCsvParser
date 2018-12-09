@@ -6,7 +6,7 @@ using System.Globalization;
 
 namespace CoreCsvParser.TypeConverter
 {
-    public class SingleConverter : NonNullableConverter<Single>
+    public class SingleConverter : NonNullableConverter<float>
     {
         private readonly IFormatProvider formatProvider;
         private readonly NumberStyles numberStyles;
@@ -27,9 +27,11 @@ namespace CoreCsvParser.TypeConverter
             this.numberStyles = numberStyles;
         }
 
-        protected override bool InternalConvert(ReadOnlySpan<char> value, out Single result)
+        protected override bool InternalConvert(ReadOnlySpan<char> value, out float result)
         {
-            return Single.TryParse(value, numberStyles, formatProvider, out result);
+            return float.TryParse(value, numberStyles, formatProvider, out result)
+                && float.IsFinite(result)
+                && !float.IsNaN(result);
         }
     }
 }
