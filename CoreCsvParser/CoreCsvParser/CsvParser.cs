@@ -76,9 +76,9 @@ namespace CoreCsvParser
             return query.Select(x => ParseLine(x.line, x.index));
         }
 
-        public CsvMappingEnumerable<TEntity> Parse(SpanSplitEnumerable csvData)
+        public CsvMappingEnumerable<TEntity> Parse(in SpanSplitEnumerable csvData)
         {
-            return new CsvMappingEnumerable<TEntity>(_options, _mapping, ref csvData);
+            return new CsvMappingEnumerable<TEntity>(_options, _mapping, in csvData);
         }
 
         public CsvMappingResult<TEntity> ParseLine(ReadOnlySpan<char> line, int lineNum)

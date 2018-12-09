@@ -36,7 +36,7 @@ namespace CoreCsvParser.Test.Benchmarks
             int csvDataLines = 1000000;
             int[] degreeOfParallelismList = new[] { 1, 2, 4 };
 
-            StringBuilder stringBuilder = new StringBuilder();
+            var stringBuilder = new StringBuilder();
             for (int i = 0; i < csvDataLines; i++)
             {
                 stringBuilder.AppendLine("Philipp;Wagner;1986/05/12");
@@ -45,10 +45,10 @@ namespace CoreCsvParser.Test.Benchmarks
 
             foreach (var degreeOfParallelism in degreeOfParallelismList)
             {
-                CsvParserOptions csvParserOptions = new CsvParserOptions(true, ';' , degreeOfParallelism, true);
-                CsvReaderOptions csvReaderOptions = new CsvReaderOptions(Environment.NewLine);
-                CsvPersonMapping csvMapper = new CsvPersonMapping();
-                CsvParser<Person> csvParser = new CsvParser<Person>(csvParserOptions, csvMapper);
+                var csvParserOptions = new CsvParserOptions(true, ';' , degreeOfParallelism, true);
+                var csvReaderOptions = new CsvReaderOptions(Environment.NewLine);
+                var csvMapper = new CsvPersonMapping();
+                var csvParser = new CsvParser<Person>(csvParserOptions, csvMapper);
 
                 MeasurementUtils.MeasureElapsedTime(string.Format("DegreeOfParallelismTest (DegreeOfParallelism = {0})", degreeOfParallelism), () => csvParser.ReadFromString(csvReaderOptions, csvData).ToList());
             }

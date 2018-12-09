@@ -28,10 +28,7 @@ namespace CoreCsvParser.Tokenizer
                 End = end;
             }
 
-            public override string ToString()
-            {
-                return string.Format("ColumnDefinition (Start = {0}, End = {1}", Start, End);
-            }
+            public override string ToString() => $"ColumnDefinition (Start = {Start}, End = {End}";
         }
 
         private readonly Column[] _columns;
@@ -69,9 +66,9 @@ namespace CoreCsvParser.Tokenizer
                     return chars = remaining = ReadOnlySpan<char>.Empty;
                 }
 
-                remaining = chars.Slice(col.End);
+                remaining = chars[col.End..];
                 foundToken = true;
-                return TrimToken ? chars.Slice(col.Start, col.End - col.Start).Trim() : chars.Slice(col.Start, col.End - col.Start);
+                return TrimToken ? chars[col.Start..col.End].Trim() : chars[col.Start..col.End];
             }
 
             return new TokenEnumerable(input, nextToken);

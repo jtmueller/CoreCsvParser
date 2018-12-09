@@ -6,7 +6,7 @@ namespace System
 {
     // Based on: https://gist.github.com/LordJZ/e0b5245d69497f2a43a5f09c1d26e34c
 
-    public ref struct SpanSplitEnumerable
+    public readonly ref struct SpanSplitEnumerable
     {
         private readonly char _separator;
         private readonly char[] _separators;
@@ -137,8 +137,8 @@ namespace System
             }
             else
             {
-                Current = _span.Slice(0, idx);
-                _span = _span.Slice(idx + sepLen);
+                Current = _span[..idx];
+                _span = _span[idx + sepLen..];
 
                 if (_options == StringSplitOptions.RemoveEmptyEntries && Current.IsEmpty)
                     goto next;

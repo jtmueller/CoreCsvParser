@@ -41,9 +41,9 @@ namespace CoreCsvParser.Tokenizer
                     return chars;
                 }
 
-                remaining = chars.Slice(idx + FieldsSeparator.Length);
+                remaining = chars[idx + FieldsSeparator.Length..];
                 foundToken = true;
-                return chars.Slice(0, idx);
+                return chars[0..idx];
             }
 
             return new TokenEnumerable(TrimLine ? input.Trim() : input, nextToken);

@@ -15,23 +15,23 @@ namespace CoreCsvParser
 
         IEnumerable<CsvMappingResult<TEntity>> Parse(Stream csvData);
 
-        CsvMappingEnumerable<TEntity> Parse(SpanSplitEnumerable csvData);
+        CsvMappingEnumerable<TEntity> Parse(in SpanSplitEnumerable csvData);
     }
 
-    public ref struct CsvMappingEnumerable<T> where T : new()
+    public readonly ref struct CsvMappingEnumerable<T> where T : new()
     {
         private readonly CsvParserOptions _options;
-        private SpanSplitEnumerable _lines;
+        private readonly SpanSplitEnumerable _lines;
         private readonly CsvMapping<T> _mapping;
 
-        public CsvMappingEnumerable(CsvParserOptions options, CsvMapping<T> mapping, ref SpanSplitEnumerable lines)
+        public CsvMappingEnumerable(CsvParserOptions options, CsvMapping<T> mapping, in SpanSplitEnumerable lines)
         {
             _options = options;
             _mapping = mapping;
             _lines = lines;
         }
 
-        public CsvMappingEnumerator<T> GetEnumerator() => new CsvMappingEnumerator<T>(_options, _mapping, ref _lines);
+        public CsvMappingEnumerator<T> GetEnumerator() => new CsvMappingEnumerator<T>(_options, _mapping, in _lines);
 
         public CsvMappingResult<T>[] ToArray() => ToList().ToArray();
 
@@ -64,7 +64,7 @@ namespace CoreCsvParser
         private readonly CsvMapping<T> _mapping;
         private int _curLine;
 
-        public CsvMappingEnumerator(CsvParserOptions options, CsvMapping<T> mapping, ref SpanSplitEnumerable lines)
+        public CsvMappingEnumerator(CsvParserOptions options, CsvMapping<T> mapping, in SpanSplitEnumerable lines)
         {
             _options = options;
             _mapping = mapping;

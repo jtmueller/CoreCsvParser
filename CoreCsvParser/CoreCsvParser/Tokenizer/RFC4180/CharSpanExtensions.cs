@@ -19,8 +19,8 @@ namespace CoreCsvParser.Tokenizer.RFC4180
                 return chars;
             }
 
-            remaining = chars.Slice(idx);
-            var output = chars.Slice(0, idx);
+            remaining = chars[idx..];
+            var output = chars[0..idx];
             if (trim)
                 output = output.Trim();
 

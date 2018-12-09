@@ -1,6 +1,7 @@
 ﻿using NUnit.Framework;
 using System;
 using CoreCsvParser.Extensions;
+using System.Linq;
 
 namespace CoreCsvParser.Test.Extensions
 {
@@ -16,9 +17,9 @@ namespace CoreCsvParser.Test.Extensions
 
             Assert.AreEqual(expected.Length, results.Length, "Wrong number of results!");
 
-            for (var i = 0; i < expected.Length; i++)
+            foreach (var (exp, act) in expected.Zip(results))
             {
-                Assert.AreEqual(expected[i], results[i]);
+                Assert.AreEqual(exp, act);
             }
         }
 
@@ -31,9 +32,9 @@ namespace CoreCsvParser.Test.Extensions
 
             Assert.AreEqual(expected.Length, results.Length, "Wrong number of results!");
 
-            for (var i = 0; i < expected.Length; i++)
+            foreach (var (exp, act) in expected.Zip(results))
             {
-                Assert.AreEqual(expected[i], results[i]);
+                Assert.AreEqual(exp, act);
             }
         }
 
@@ -46,9 +47,9 @@ namespace CoreCsvParser.Test.Extensions
 
             Assert.AreEqual(expected.Length, results.Length, "Wrong number of results!");
 
-            for (var i = 0; i < expected.Length; i++)
+            foreach (var (exp, act) in expected.Zip(results))
             {
-                Assert.AreEqual(expected[i], results[i]);
+                Assert.AreEqual(exp, act);
             }
         }
 
@@ -61,9 +62,9 @@ namespace CoreCsvParser.Test.Extensions
 
             Assert.AreEqual(expected.Length, results.Length, "Wrong number of results!");
 
-            for (var i = 0; i < expected.Length; i++)
+            foreach (var (exp, act) in expected.Zip(results))
             {
-                Assert.AreEqual(expected[i], results[i]);
+                Assert.AreEqual(exp, act);
             }
         }
 
@@ -77,24 +78,24 @@ namespace CoreCsvParser.Test.Extensions
 
             Assert.AreEqual(expected.Length, results.Length, "Wrong number of results!");
 
-            for (var i = 0; i < expected.Length; i++)
+            foreach (var (exp, act) in expected.Zip(results))
             {
-                Assert.AreEqual(expected[i], results[i]);
+                Assert.AreEqual(exp, act);
             }
         }
 
         [Test]
         public void Split_By_String_Test()
         {
-            var input = String.Join(Environment.NewLine, new[] { "foo", "bar", "baz", "quux" });
+            var input = string.Join(Environment.NewLine, new[] { "foo", "bar", "baz", "quux" });
             var expected = input.Split(Environment.NewLine);
             var results = input.AsSpan().Split(Environment.NewLine).ToArray();
 
             Assert.AreEqual(expected.Length, results.Length, "Wrong number of results!");
 
-            for (var i = 0; i < expected.Length; i++)
+            foreach (var (exp, act) in expected.Zip(results))
             {
-                Assert.AreEqual(expected[i], results[i]);
+                Assert.AreEqual(exp, act);
             }
         }
     }

@@ -7,9 +7,9 @@ namespace CoreCsvParser.Extensions
     {
         public static void AddRange<T>(this IList<T> list, ReadOnlySpan<T> span)
         {
-            for (int i = 0, len = span.Length; i < len; i++)
+            foreach (var item in span)
             {
-                list.Add(span[i]);
+                list.Add(item);
             }
         }
     }

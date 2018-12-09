@@ -40,7 +40,7 @@ namespace CoreCsvParser.Tokenizer.RFC4180
 
             if (c == options.DelimiterCharacter)
             {
-                remaining = chars.Slice(1);
+                remaining = chars[1..];
                 foundToken = true;
                 return ReadOnlySpan<char>.Empty;
             }
@@ -63,7 +63,7 @@ namespace CoreCsvParser.Tokenizer.RFC4180
                     if (IsDelimiter(chars[0]))
                     {
                         _lastChar = chars[0];
-                        chars = chars.Slice(1);
+                        chars = chars[1..];
                     }
 
                     remaining = chars;
@@ -84,7 +84,7 @@ namespace CoreCsvParser.Tokenizer.RFC4180
                 if (IsDelimiter(chars[0]))
                 {
                     _lastChar = chars[0];
-                    chars = chars.Slice(1);
+                    chars = chars[1..];
                 }
 
                 remaining = chars;
@@ -97,12 +97,12 @@ namespace CoreCsvParser.Tokenizer.RFC4180
         {
             var options = Options;
             if (chars[0] == options.QuoteCharacter)
-                chars = chars.Slice(1);
+                chars = chars[1..];
 
             var result = chars.ReadTo(options.QuoteCharacter, out chars);
 
             if (chars[0] == options.QuoteCharacter)
-                chars = chars.Slice(1);
+                chars = chars[1..];
 
             if (chars.IsEmpty || chars[0] != options.QuoteCharacter)
             {
@@ -116,10 +116,10 @@ namespace CoreCsvParser.Tokenizer.RFC4180
             do
             {
                 buffer.Add(chars[0]);
-                chars = chars.Slice(1);
+                chars = chars[1..];
                 var read = chars.ReadTo(options.QuoteCharacter, out chars);
                 buffer.AddRange(read);
-                chars = chars.Slice(1);
+                chars = chars[1..];
             } while (!chars.IsEmpty && chars[0] == options.QuoteCharacter);
 
             remaining = chars;

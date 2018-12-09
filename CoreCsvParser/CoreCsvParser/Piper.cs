@@ -97,7 +97,7 @@ namespace CoreCsvParser
 
                     do
                     {
-                        // Find the EOL
+                        // Find the EOLf
                         position = buffer.PositionOf((byte)'\n');
 
                         if (position != null)
@@ -167,7 +167,7 @@ namespace CoreCsvParser
                 {
                     var chars = chrMem.Memory.Span;
                     var charCount = encoding.GetChars(bytes, chars);
-                    var line = chars.Slice(0, charCount);
+                    var line = chars[..charCount];
                     return ParseLine(parser, lineNum, line);
                 }
             }
@@ -180,11 +180,11 @@ namespace CoreCsvParser
                 foreach (var segment in buffer)
                 {
                     var bytes = segment.Span;
-                    var charCount = encoding.GetChars(bytes, chars.Slice(len));
+                    var charCount = encoding.GetChars(bytes, chars[len..]);
                     len += charCount;
                 }
 
-                var line = chars.Slice(0, len);
+                var line = chars[..len];
                 return ParseLine(parser, lineNum, line);
             }
         }
@@ -200,8 +200,8 @@ namespace CoreCsvParser
 
             // since we're splitting on \n, a \r\n file
             // will have \r at the end of each line, so slice that off
-            if (line[line.Length - 1] == '\r')
-                return parser.ParseLine(line.Slice(0, line.Length - 1), lineNum);
+            if (line[^1] == '\r')
+                return parser.ParseLine(line[..^1], lineNum);
 
             return parser.ParseLine(line, lineNum);
         }
