@@ -76,7 +76,7 @@ namespace CoreCsvParser.Mapping
             if (mappedCols == 0)
             {
                 return new CsvMappingResult<TEntity>(rowIndex, colIndex,
-                            $"No columns were mapped for {_csvPropertyMappings.Count} mappings, {colIndex} columns in row {rowIndex}.");
+                    $"No columns were mapped for {_csvPropertyMappings.Count} mappings, {colIndex} columns in row {rowIndex}.");
             }
 
             return new CsvMappingResult<TEntity>(rowIndex, entity);

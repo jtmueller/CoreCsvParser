@@ -34,6 +34,12 @@ namespace CoreCsvParser.Mapping
 
         public readonly bool IsValid;
 
+        public void Deconstruct(out bool isValid, out TEntity result)
+        {
+            isValid = IsValid;
+            result = _result;
+        }
+
         public override string ToString()
         {
             if (!IsValid)

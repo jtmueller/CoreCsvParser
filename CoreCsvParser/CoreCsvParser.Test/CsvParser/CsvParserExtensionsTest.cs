@@ -38,7 +38,7 @@ namespace CoreCsvParser.Test.CsvParser
             CsvParser<Person> csvParser = new CsvParser<Person>(csvParserOptions, csvMapper);
 
 #pragma warning disable CS8625 // Cannot convert null literal to non-nullable reference or unconstrained type parameter.
-            Assert.Throws<ArgumentException>(() => csvParser.ReadFromFile(null, Encoding.UTF8));
+            Assert.Throws<ArgumentNullException>(() => csvParser.ReadFromFile(null, Encoding.UTF8));
 #pragma warning restore CS8625 // Cannot convert null literal to non-nullable reference or unconstrained type parameter.
         }
 

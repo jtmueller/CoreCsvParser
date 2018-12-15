@@ -3,10 +3,10 @@ using BenchmarkDotNet.Running;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reactive.Threading.Tasks;
 using System.Text;
 using CoreCsvParser.Mapping;
 using CoreCsvParser.TypeConverter;
+using System.Threading.Tasks;
 
 namespace CoreCsvParser.Benchmark
 {
@@ -98,24 +98,22 @@ namespace CoreCsvParser.Benchmark
         }
 
         [Benchmark]
-        public void LocalWeatherPipeline()
+        public async Task LocalWeatherPipeline()
         {
-            // TODO: This method is missing some lines!
-            // LocalWeatherRead_One_Core: Parsed 4,496,262 lines.
-            // LocalWeatherPipeline:      Parsed 4,441,695 lines.
-
             var csvParserOptions = new CsvParserOptions(true, ',', 1, true);
             var csvMapper = new LocalWeatherDataMapper();
             var csvParser = new CsvParser<LocalWeatherData>(csvParserOptions, csvMapper);
 
             var items = new List<LocalWeatherData>();
-            var observable = csvParser.ObserveFromFile(@"C:\Temp\201503hourly.txt", Encoding.ASCII);
-            observable.Subscribe(items.Add, ex => throw ex);
-            observable.ToTask().Wait();
+            await foreach (var (isValid, item) in csvParser.ReadFromFileAsync(@"C:\Temp\201503hourly.txt", Encoding.ASCII))
+            {
+                if (isValid)
+                    items.Add(item);
+            }
             //Console.WriteLine($"Parsed {items.Count:N0} lines.");
         }
 
-        public static void CompareLoaders()
+        public static async Task CompareLoaders()
         {
             // use this in C# interactive to create subsets of the big file with a specific number of rows
             //void SubsetFile(string baseFilePath, int rows)
@@ -152,10 +150,23 @@ namespace CoreCsvParser.Benchmark
             Console.WriteLine("Starting Pipeline file read...");
 
             var pipedItems = new List<LocalWeatherData>(readItems.Count);
-            var observable = csvParser.ObserveFromFile(@"C:\Temp\201503hourly-first-1000.txt", Encoding.ASCII);
-            observable.Subscribe(x => { pipedItems.Add(x); }, ex => Console.WriteLine(ex.Message));
-            observable.ToTask().Wait();
-            Console.WriteLine($"Piped {pipedItems.Count:N0} lines.");
+
+            try
+            {
+                await foreach (var item in csvParser.ReadFromFileAsync(@"C:\Temp\201503hourly-first-1000.txt", Encoding.ASCII))
+                {
+                    if (item.IsValid)
+                        pipedItems.Add(item.Result);
+                    else
+                        Console.Error.WriteLine(item.Error);
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.Error.WriteLine(ex.ToString());
+                Console.WriteLine("Total read: {0}. Last successful read: {1}", pipedItems.Count, pipedItems.Last());
+                return;
+            }
 
             if (readItems.Count > pipedItems.Count)
             {
@@ -165,6 +176,11 @@ namespace CoreCsvParser.Benchmark
                     Console.WriteLine(item.ToString());
                 }
             }
+            else
+            {
+                Console.WriteLine("Read items: {0:N0}.", readItems.Count);
+                Console.WriteLine("Piped items: {0:N0}.", pipedItems.Count);
+            }
 
             Console.WriteLine();
         }
@@ -172,11 +188,14 @@ namespace CoreCsvParser.Benchmark
 
     public class Program
     {
+        //public static async Task Main(string[] args)
+        //{
+        //    await CsvBenchmark.CompareLoaders();
+        //}
+
         public static void Main(string[] args)
         {
             var summary = BenchmarkRunner.Run<CsvBenchmark>();
-            //CsvBenchmark.CompareLoaders();
-            //CsvBenchmark.CompareLoaders();
             //new CsvBenchmark().LocalWeatherPipeline();
         }
     }

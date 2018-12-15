@@ -74,7 +74,7 @@ namespace CoreCsvParser.Test.Issues
 
             Assert.IsFalse(result.IsValid);
 
-            Assert.AreEqual("Column 0 with Value 'a' cannot be converted.", result.Error?.Message);
+            Assert.AreEqual("Column 0 with Value 'a' cannot be converted. (Row:0, Col:0)", result.Error?.Message);
             Assert.AreEqual(0, result.Error?.ColumnIndex);
 
             Assert.DoesNotThrow(() => result.ToString());

@@ -11,16 +11,15 @@ namespace CoreCsvParser
 {
     public class CsvParser<TEntity> : ICsvParser<TEntity> where TEntity : new()
     {
-        private readonly CsvParserOptions _options;
         private readonly CsvMapping<TEntity> _mapping;
 
         public CsvParser(CsvParserOptions options, CsvMapping<TEntity> mapping)
         {
-            _options = options;
+            Options = options;
             _mapping = mapping;
         }
 
-        public CsvParserOptions Options => _options;
+        public CsvParserOptions Options { get; }
 
         public IEnumerable<CsvMappingResult<TEntity>> Parse(Stream csvData)
         {
@@ -48,48 +47,46 @@ namespace CoreCsvParser
 
             var query = csvData
                 .Select((line, index) => (line, index))
-                .Skip(_options.SkipHeader ? 1 : 0);
+                .Skip(Options.SkipHeader ? 1 : 0);
 
-            if (_options.DegreeOfParallelism > 1)
+            if (Options.DegreeOfParallelism > 1)
             {
                 var parallelQuery = query.AsParallel();
 
                 // If you want to get the same order as in the CSV file, this option needs to be set:
-                if (_options.KeepOrder)
+                if (Options.KeepOrder)
                 {
                     parallelQuery = parallelQuery.AsOrdered();
                 }
 
-                query = parallelQuery.WithDegreeOfParallelism(_options.DegreeOfParallelism);
+                query = parallelQuery.WithDegreeOfParallelism(Options.DegreeOfParallelism);
             }
 
             query = query.Where(x => !string.IsNullOrWhiteSpace(x.line));
 
             // Ignore lines that start with comment character(s):
-            if (!string.IsNullOrWhiteSpace(_options.CommentCharacter))
+            if (!string.IsNullOrWhiteSpace(Options.CommentCharacter))
             {
-                query = query.Where(x => !x.line.StartsWith(_options.CommentCharacter));
+                query = query.Where(x => !x.line.StartsWith(Options.CommentCharacter));
             }
 
-            var tokenizer = _options.Tokenizer;
+            var tokenizer = Options.Tokenizer;
 
             return query.Select(x => ParseLine(x.line, x.index));
         }
 
         public CsvMappingEnumerable<TEntity> Parse(in SpanSplitEnumerable csvData)
         {
-            return new CsvMappingEnumerable<TEntity>(_options, _mapping, in csvData);
+            return new CsvMappingEnumerable<TEntity>(Options, _mapping, in csvData);
         }
 
         public CsvMappingResult<TEntity> ParseLine(ReadOnlySpan<char> line, int lineNum)
         {
-            var tokens = _options.Tokenizer.Tokenize(line);
+            var tokens = Options.Tokenizer.Tokenize(line);
             return _mapping.Map(tokens, lineNum);
         }
 
-        public override string ToString()
-        {
-            return string.Format("CsvParser (Options = {0}, Mapping = {1})", _options, _mapping);
-        }
+        public override string ToString() =>
+            $"CsvParser (Options = {Options}, Mapping = {_mapping})";
     }
 }

@@ -65,7 +65,6 @@
 
   <ItemGroup>
     <PackageReference Include="System.IO.Pipelines" Version="4.5.2" />
-    <PackageReference Include="System.Reactive" Version="4.1.2" />
     <PackageReference Include="System.Runtime.CompilerServices.Unsafe" Version="4.5.2" />
   </ItemGroup>
 

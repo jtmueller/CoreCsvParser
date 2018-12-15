@@ -19,6 +19,6 @@ namespace CoreCsvParser.Mapping
 
         public int ColumnIndex { get; }
         public int RowIndex { get; }
-        public override string Message => _message;
+        public override string Message => $"{_message} (Row:{RowIndex}, Col:{ColumnIndex})";
     }
 }

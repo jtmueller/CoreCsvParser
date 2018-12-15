@@ -15,7 +15,7 @@ namespace CoreCsvParser
             where TEntity : new()
         {
             if (string.IsNullOrEmpty(fileName))
-                throw new ArgumentException(nameof(fileName));
+                throw new ArgumentNullException(nameof(fileName));
 
             var lines = File.ReadLines(fileName, encoding);
 
@@ -35,22 +35,22 @@ namespace CoreCsvParser
             return csvParser.Parse(parts);
         }
 
-        public static IObservable<TEntity> ObserveFromFile<TEntity>(this CsvParser<TEntity> csvParser, string fileName, Encoding encoding)
+        public static IAsyncEnumerable<CsvMappingResult<TEntity>> ReadFromFileAsync<TEntity>(this CsvParser<TEntity> csvParser, string fileName, Encoding encoding)
             where TEntity : new()
         {
-            return Piper.ObserveFile(fileName, encoding, csvParser);
+            return Piper.EnumerateFile(fileName, encoding, csvParser);
         }
 
-        public static IObservable<TEntity> ObserveFromFile<TEntity>(this CsvParser<TEntity> csvParser, FileInfo file, Encoding encoding)
+        public static IAsyncEnumerable<CsvMappingResult<TEntity>> ReadFromFileAsync<TEntity>(this CsvParser<TEntity> csvParser, FileInfo file, Encoding encoding)
             where TEntity : new()
         {
-            return Piper.ObserveFile(file, encoding, csvParser);
+            return Piper.EnumerateFile(file, encoding, csvParser);
         }
 
-        public static IObservable<TEntity> ObserveFromStream<TEntity>(this CsvParser<TEntity> csvParser, Stream stream, Encoding encoding)
+        public static IAsyncEnumerable<CsvMappingResult<TEntity>> ReadFromStreamAsync<TEntity>(this CsvParser<TEntity> csvParser, Stream stream, Encoding encoding)
             where TEntity : new()
         {
-            return Piper.ObserveStream(stream, encoding, csvParser);
+            return Piper.EnumerateStream(stream, encoding, csvParser);
         }
     }
 }
