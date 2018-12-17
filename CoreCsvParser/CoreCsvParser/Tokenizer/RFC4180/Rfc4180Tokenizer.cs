@@ -2,21 +2,20 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
-using System.Collections.Generic;
-using CoreCsvParser.Extensions;
 
 namespace CoreCsvParser.Tokenizer.RFC4180
 {
     public class RFC4180Tokenizer : ITokenizer 
     {
         private char _lastChar;
+        private readonly char _quoteChar;
+        private readonly char _delimiterChar;
 
         public RFC4180Tokenizer(Options options)
         {
-            Options = options;
+            _quoteChar = options.QuoteCharacter;
+            _delimiterChar = options.DelimiterCharacter;
         }
-
-        public Options Options { get; }
 
         public TokenEnumerable Tokenize(ReadOnlySpan<char> input)
         {
@@ -26,11 +25,10 @@ namespace CoreCsvParser.Tokenizer.RFC4180
         private ReadOnlySpan<char> NextToken(ReadOnlySpan<char> chars, out ReadOnlySpan<char> remaining, out bool foundToken)
         {
             chars = chars.TrimStart();
-            var options = Options;
 
             if (chars.IsEmpty)
             {
-                foundToken = _lastChar == options.DelimiterCharacter;
+                foundToken = _lastChar == _delimiterChar;
                 _lastChar = (char)0;
                 return remaining = ReadOnlySpan<char>.Empty;
             }
@@ -38,7 +36,7 @@ namespace CoreCsvParser.Tokenizer.RFC4180
             char c = chars[0];
             _lastChar = c;
 
-            if (c == options.DelimiterCharacter)
+            if (c == _delimiterChar)
             {
                 remaining = chars[1..];
                 foundToken = true;
@@ -47,7 +45,7 @@ namespace CoreCsvParser.Tokenizer.RFC4180
             else
             {
                 var result = ReadOnlySpan<char>.Empty;
-                if (IsQuoteCharacter(c))
+                if (c == _quoteChar)
                 {
                     result = ReadQuoted(chars, out chars);
 
@@ -60,7 +58,7 @@ namespace CoreCsvParser.Tokenizer.RFC4180
                         return result;
                     }
 
-                    if (IsDelimiter(chars[0]))
+                    if (chars[0] == _delimiterChar)
                     {
                         _lastChar = chars[0];
                         chars = chars[1..];
@@ -71,7 +69,7 @@ namespace CoreCsvParser.Tokenizer.RFC4180
                     return result;
                 }
 
-                result = chars.ReadTo(options.DelimiterCharacter, out chars, trim: true);
+                result = chars.ReadTo(_delimiterChar, out chars, trim: true);
                 chars = chars.TrimStart();
 
                 if (chars.IsEmpty)
@@ -81,7 +79,7 @@ namespace CoreCsvParser.Tokenizer.RFC4180
                     return result;
                 }
 
-                if (IsDelimiter(chars[0]))
+                if (chars[0] == _delimiterChar)
                 {
                     _lastChar = chars[0];
                     chars = chars[1..];
@@ -93,43 +91,46 @@ namespace CoreCsvParser.Tokenizer.RFC4180
             }
         }
 
-        private ReadOnlySpan<char> ReadQuoted(ReadOnlySpan<char> chars, out ReadOnlySpan<char> remaining)
+        private ReadOnlySpan<char> ReadQuoted(ReadOnlySpan<char> input, out ReadOnlySpan<char> remaining)
         {
-            var options = Options;
-            if (chars[0] == options.QuoteCharacter)
+            var chars = input;
+            if (chars[0] == _quoteChar)
                 chars = chars[1..];
 
-            var result = chars.ReadTo(options.QuoteCharacter, out chars);
+            var result = chars.ReadTo(_quoteChar, out chars);
 
-            if (chars[0] == options.QuoteCharacter)
+            if (chars[0] == _quoteChar)
                 chars = chars[1..];
 
-            if (chars.IsEmpty || chars[0] != options.QuoteCharacter)
+            if (chars.IsEmpty || chars[0] != _quoteChar)
             {
                 remaining = chars;
                 return result;
             }
 
-            // this could be more efficient by figuring out indices and slicing the original input accordingly
-            var buffer = new List<char>(result.Length + 10);
-            buffer.AddRange(result);
+            // If we got here, there's an escaped (doubled) quote char. We have to read to the next non-escaped quote,
+            // and also un-escape any escaped quotes.
+
+            // This allocation is unfortunate, but since we have to un-escape doubled quotes, we can't accomplish this
+            // just by slicing. Since we're returning the value, we can't use a MemoryPool.
+
+            Span<char> span = new char[input.Length];
+            result.CopyTo(span);
+            var curIdx = result.Length;
             do
             {
-                buffer.Add(chars[0]);
+                span[curIdx++] = chars[0];
                 chars = chars[1..];
-                var read = chars.ReadTo(options.QuoteCharacter, out chars);
-                buffer.AddRange(read);
+                var read = chars.ReadTo(_quoteChar, out chars);
+                read.CopyTo(span[curIdx..]);
+                curIdx += read.Length;
                 chars = chars[1..];
-            } while (!chars.IsEmpty && chars[0] == options.QuoteCharacter);
+            } while (!chars.IsEmpty && chars[0] == _quoteChar);
 
             remaining = chars;
-            return buffer.ToArray().AsSpan();
+            return span[..curIdx];
         }
 
-        private bool IsQuoteCharacter(char c) => c == Options.QuoteCharacter;
-
-        private bool IsDelimiter(char c) => c == Options.DelimiterCharacter;
-
-        public override string ToString() => $"RFC4180Tokenizer (Options = {Options})";
+        public override string ToString() => $"RFC4180Tokenizer (Quote = {_quoteChar}, Delimiter = {_delimiterChar})";
     }
 }
