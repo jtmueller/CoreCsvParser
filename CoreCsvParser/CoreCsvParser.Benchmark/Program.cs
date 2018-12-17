@@ -74,9 +74,9 @@ namespace CoreCsvParser.Benchmark
     public class CsvBenchmark
     {
         [Benchmark]
-        public void LocalWeatherRead_One_Core()
+        public void LocalWeatherRead()
         {
-            var csvParserOptions = new CsvParserOptions(true, ',', 1, true);
+            var csvParserOptions = new CsvParserOptions(true, ',');
             var csvMapper = new LocalWeatherDataMapper();
             var csvParser = new CsvParser<LocalWeatherData>(csvParserOptions, csvMapper);
 
@@ -86,21 +86,9 @@ namespace CoreCsvParser.Benchmark
         }
 
         [Benchmark]
-        public void LocalWeatherRead_4_Cores()
+        public async Task LocalWeatherReadAsync()
         {
-            var csvParserOptions = new CsvParserOptions(true, ',', 4, true);
-            var csvMapper = new LocalWeatherDataMapper();
-            var csvParser = new CsvParser<LocalWeatherData>(csvParserOptions, csvMapper);
-
-            var a = csvParser
-                .ReadFromFile(@"C:\Temp\201503hourly.txt", Encoding.ASCII)
-                .ToList();
-        }
-
-        [Benchmark]
-        public async Task LocalWeatherPipeline()
-        {
-            var csvParserOptions = new CsvParserOptions(true, ',', 1, true);
+            var csvParserOptions = new CsvParserOptions(true, ',');
             var csvMapper = new LocalWeatherDataMapper();
             var csvParser = new CsvParser<LocalWeatherData>(csvParserOptions, csvMapper);
 
@@ -134,7 +122,7 @@ namespace CoreCsvParser.Benchmark
             */
 
             Console.WriteLine("Starting direct file read...");
-            var csvParserOptions = new CsvParserOptions(true, ',', 1, true);
+            var csvParserOptions = new CsvParserOptions(true, ',');
             var csvMapper = new LocalWeatherDataMapperWithRowNum();
             var csvParser = new CsvParser<LocalWeatherData>(csvParserOptions, csvMapper);
 

@@ -142,7 +142,7 @@ namespace CoreCsvParser.Test.CsvParser
         [Test]
         public void TrimLineTest()
         {
-            CsvParserOptions csvParserOptions = new CsvParserOptions(true, ';', 1, true);
+            CsvParserOptions csvParserOptions = new CsvParserOptions(true, ';');
             CsvReaderOptions csvReaderOptions = new CsvReaderOptions(Environment.NewLine);
             CsvPersonMapping csvMapper = new CsvPersonMapping();
             CsvParser<Person> csvParser = new CsvParser<Person>(csvParserOptions, csvMapper);
@@ -172,36 +172,6 @@ namespace CoreCsvParser.Test.CsvParser
             Assert.AreEqual(2014, result[1].Result.BirthDate.Year);
             Assert.AreEqual(1, result[1].Result.BirthDate.Month);
             Assert.AreEqual(1, result[1].Result.BirthDate.Day);
-        }
-
-
-        [Test]
-        public void ParallelLinqTest()
-        {
-            CsvParserOptions csvParserOptions = new CsvParserOptions(true, ';', 3, true);
-            CsvReaderOptions csvReaderOptions = new CsvReaderOptions(Environment.NewLine);
-            CsvPersonMapping csvMapper = new CsvPersonMapping();
-            CsvParser<Person> csvParser = new CsvParser<Person>(csvParserOptions, csvMapper);
-
-            var stringBuilder = new StringBuilder()
-                .AppendLine("FirstName;LastName;BirthDate")
-                .AppendLine("Philipp;Wagner;1986/05/12")
-                .AppendLine("Max;Mustermann;2014/01/01");
-
-            var result = csvParser
-                .ReadFromString(csvReaderOptions, stringBuilder.ToString())
-                .Where(x => x.IsValid)
-                .Where(x => x.Result.FirstName == "Philipp")
-                .ToList();
-
-            Assert.AreEqual(1, result.Count);
-
-            Assert.AreEqual("Philipp", result[0].Result.FirstName);
-            Assert.AreEqual("Wagner", result[0].Result.LastName);
-
-            Assert.AreEqual(1986, result[0].Result.BirthDate.Year);
-            Assert.AreEqual(5, result[0].Result.BirthDate.Month);
-            Assert.AreEqual(12, result[0].Result.BirthDate.Day);
         }
 
         [Test]

@@ -63,22 +63,8 @@ namespace CoreCsvParser
 
             var query = csvData
                 .Select((line, index) => (line, index))
-                .Skip(Options.SkipHeader ? 1 : 0);
-
-            if (Options.DegreeOfParallelism > 1)
-            {
-                var parallelQuery = query.AsParallel();
-
-                // If you want to get the same order as in the CSV file, this option needs to be set:
-                if (Options.KeepOrder)
-                {
-                    parallelQuery = parallelQuery.AsOrdered();
-                }
-
-                query = parallelQuery.WithDegreeOfParallelism(Options.DegreeOfParallelism).WithCancellation(ct);
-            }
-
-            query = query.Where(x => !string.IsNullOrWhiteSpace(x.line));
+                .Skip(Options.SkipHeader ? 1 : 0)
+                .Where(x => !string.IsNullOrWhiteSpace(x.line));
 
             // Ignore lines that start with comment character(s):
             if (!string.IsNullOrWhiteSpace(Options.CommentCharacter))
