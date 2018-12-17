@@ -14,8 +14,8 @@ Span/Pipeline rewrite, .NET Core 3.0 Preview 1
 
                 Method |     Mean |    Error |   StdDev | Gen 0/1k Op | Gen 1/1k Op | Gen 2/1k Op | Allocated Memory/Op |
 ---------------------- |---------:|---------:|---------:|------------:|------------:|------------:|--------------------:|
-      LocalWeatherRead |  9.969 s | 0.0296 s | 0.0231 s | 470000.0000 | 138000.0000 |   7000.0000 |       2682888.88 KB |
- LocalWeatherReadAsync | 12.565 s | 0.0272 s | 0.0255 s | 160000.0000 |  58000.0000 |   5000.0000 |            22.53 KB |
+      LocalWeatherRead |  9.731 s | 0.0378 s | 0.0354 s | 475000.0000 | 138000.0000 |   7000.0000 |        2420740.5 KB |
+ LocalWeatherReadAsync | 12.595 s | 0.0598 s | 0.0559 s | 161000.0000 |  58000.0000 |   6000.0000 |            22.53 KB |
 
 // * Legends *
   Mean      : Arithmetic mean of all measurements

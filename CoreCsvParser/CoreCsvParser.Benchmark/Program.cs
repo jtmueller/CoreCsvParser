@@ -80,9 +80,14 @@ namespace CoreCsvParser.Benchmark
             var csvMapper = new LocalWeatherDataMapper();
             var csvParser = new CsvParser<LocalWeatherData>(csvParserOptions, csvMapper);
 
-            var a = csvParser
-                .ReadFromFile(@"C:\Temp\201503hourly.txt", Encoding.ASCII)
-                .ToList();
+            var items = new List<LocalWeatherData>();
+            foreach (var item in csvParser.ReadFromFile(@"C:\Temp\201503hourly.txt", Encoding.ASCII))
+            {
+                if (item.IsValid)
+                    items.Add(item.Result);
+                else
+                    throw new ApplicationException("Error converting data:", item.Error);
+            }
         }
 
         [Benchmark]
@@ -93,10 +98,12 @@ namespace CoreCsvParser.Benchmark
             var csvParser = new CsvParser<LocalWeatherData>(csvParserOptions, csvMapper);
 
             var items = new List<LocalWeatherData>();
-            await foreach (var (isValid, item) in csvParser.ReadFromFileAsync(@"C:\Temp\201503hourly.txt", Encoding.ASCII))
+            await foreach (var item in csvParser.ReadFromFileAsync(@"C:\Temp\201503hourly.txt", Encoding.ASCII))
             {
-                if (isValid)
-                    items.Add(item);
+                if (item.IsValid)
+                    items.Add(item.Result);
+                else
+                    throw new ApplicationException("Error converting data:", item.Error);
             }
             //Console.WriteLine($"Parsed {items.Count:N0} lines.");
         }
@@ -181,12 +188,12 @@ namespace CoreCsvParser.Benchmark
         //public static async Task Main(string[] args)
         //{
         //    await CsvBenchmark.CompareLoaders();
+        //    //await new CsvBenchmark().LocalWeatherReadAsync();
         //}
 
         public static void Main(string[] args)
         {
             var summary = BenchmarkRunner.Run<CsvBenchmark>();
-            //new CsvBenchmark().LocalWeatherPipeline();
         }
     }
 }
