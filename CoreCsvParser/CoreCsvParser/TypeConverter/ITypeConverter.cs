@@ -7,13 +7,11 @@ namespace CoreCsvParser.TypeConverter
 {
     public interface ITypeConverter
     {
-
+        Type TargetType { get; }
     }
 
     public interface ITypeConverter<TTargetType> : ITypeConverter
     {
         bool TryConvert(ReadOnlySpan<char> value, out TTargetType result);
-
-        Type TargetType { get; }
     }
 }

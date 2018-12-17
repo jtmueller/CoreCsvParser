@@ -1,6 +1,5 @@
 ﻿using NUnit.Framework;
 using System;
-using CoreCsvParser.Extensions;
 using System.Linq;
 
 namespace CoreCsvParser.Test.Extensions

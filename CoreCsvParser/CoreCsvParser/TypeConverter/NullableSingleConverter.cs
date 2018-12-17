@@ -6,7 +6,7 @@ using System.Globalization;
 
 namespace CoreCsvParser.TypeConverter
 {
-    public class NullableSingleConverter : NullableInnerConverter<Single>
+    public class NullableSingleConverter : NullableInnerConverter<float>
     {
         public NullableSingleConverter()
             : base(new SingleConverter())

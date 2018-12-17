@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Philipp Wagner and Joel Mueller. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using CoreCsvParser.Mapping;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -8,7 +9,6 @@ using System.IO.Pipelines;
 using System.Linq;
 using System.Text;
 using System.Threading;
-using CoreCsvParser.Mapping;
 
 namespace CoreCsvParser
 {
@@ -43,9 +43,9 @@ namespace CoreCsvParser
             return Parse(read());
         }
 
-        public IAsyncEnumerable<CsvMappingResult<TEntity>> ParseAsync(Stream stream, Encoding encoding, CancellationToken? ct = null)
+        public IAsyncEnumerable<CsvMappingResult<TEntity>> ParseAsync(Stream stream, Encoding encoding, CancellationToken ct = default)
         {
-            return Piper.PipeStream(stream, encoding, this, ct ?? CancellationToken.None);
+            return Piper.PipeStream(stream, encoding, this, ct);
         }
 
         /// <summary>
@@ -89,7 +89,7 @@ namespace CoreCsvParser
             return query.Select(x => ParseLine(x.line, x.index));
         }
 
-        public async IAsyncEnumerable<CsvMappingResult<TEntity>> ParseAsync(IAsyncEnumerable<string> csvData, CancellationToken? ct = null)
+        public async IAsyncEnumerable<CsvMappingResult<TEntity>> ParseAsync(IAsyncEnumerable<string> csvData, CancellationToken ct = default)
         {
             if (csvData is null)
                 throw new ArgumentNullException(nameof(csvData));
@@ -99,7 +99,7 @@ namespace CoreCsvParser
 
             await foreach (var line in csvData)
             {
-                if (ct?.IsCancellationRequested == true)
+                if (ct.IsCancellationRequested)
                     break;
 
                 if ((index == 0 && Options.SkipHeader) 
@@ -119,9 +119,9 @@ namespace CoreCsvParser
             return new CsvMappingEnumerable<TEntity>(Options, _mapping, in csvData);
         }
 
-        public IAsyncEnumerable<CsvMappingResult<TEntity>> ParseAsync(PipeReader reader, Encoding encoding, CancellationToken? ct = null)
+        public IAsyncEnumerable<CsvMappingResult<TEntity>> ParseAsync(PipeReader reader, Encoding encoding, CancellationToken ct = default)
         {
-            return Piper.EnumeratePipeAsync(reader, encoding, this, ct ?? CancellationToken.None);
+            return Piper.EnumeratePipeAsync(reader, encoding, this, ct);
         }
 
         public CsvMappingResult<TEntity> ParseLine(ReadOnlySpan<char> line, int lineNum)

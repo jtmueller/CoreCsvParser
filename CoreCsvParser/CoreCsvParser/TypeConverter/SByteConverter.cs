@@ -6,7 +6,7 @@ using System.Globalization;
 
 namespace CoreCsvParser.TypeConverter
 {
-    public class SByteConverter : NonNullableConverter<SByte>
+    public class SByteConverter : NonNullableConverter<sbyte>
     {
         private readonly IFormatProvider formatProvider;
         private readonly NumberStyles numberStyles;
@@ -28,9 +28,9 @@ namespace CoreCsvParser.TypeConverter
         }
 
 
-        protected override bool InternalConvert(ReadOnlySpan<char> value, out SByte result)
+        protected override bool InternalConvert(ReadOnlySpan<char> value, out sbyte result)
         {
-            return SByte.TryParse(value, numberStyles, formatProvider, out result);
+            return sbyte.TryParse(value, numberStyles, formatProvider, out result);
         }
     }
 }

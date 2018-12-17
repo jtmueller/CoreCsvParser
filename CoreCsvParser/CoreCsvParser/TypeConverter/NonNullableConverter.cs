@@ -19,7 +19,6 @@ namespace CoreCsvParser.TypeConverter
                 return false;
             }
             return InternalConvert(value, out result);
-            
         }
 
         protected abstract bool InternalConvert(ReadOnlySpan<char> value, out TTargetType result);

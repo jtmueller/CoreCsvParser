@@ -6,7 +6,7 @@ using System.Globalization;
 
 namespace CoreCsvParser.TypeConverter
 {
-    public class DecimalConverter : NonNullableConverter<Decimal>
+    public class DecimalConverter : NonNullableConverter<decimal>
     {
         private readonly IFormatProvider formatProvider;
         private readonly NumberStyles numberStyles;
@@ -27,9 +27,9 @@ namespace CoreCsvParser.TypeConverter
             this.numberStyles = numberStyles;
         }
 
-        protected override bool InternalConvert(ReadOnlySpan<char> value, out Decimal result)
+        protected override bool InternalConvert(ReadOnlySpan<char> value, out decimal result)
         {
-            return Decimal.TryParse(value, numberStyles, formatProvider, out result);
+            return decimal.TryParse(value, numberStyles, formatProvider, out result);
         }
     }
 }

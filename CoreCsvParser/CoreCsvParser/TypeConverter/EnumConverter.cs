@@ -2,15 +2,13 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
-using CoreCsvParser.Reflection;
 
 namespace CoreCsvParser.TypeConverter
 {
     public class EnumConverter<TTargetType> : NonNullableConverter<TTargetType>
-        where TTargetType : struct
+        where TTargetType : struct, Enum
     {
-        private readonly Type enumType;
-        private readonly bool ignoreCase;
+        private readonly bool _ignoreCase;
 
         public EnumConverter()
             : this(true)
@@ -19,17 +17,13 @@ namespace CoreCsvParser.TypeConverter
 
         public EnumConverter(bool ignoreCase)
         {
-            if (!ReflectionUtils.IsEnum(typeof(TTargetType)))
-            {
-                throw new ArgumentException(string.Format("Type {0} is not a valid Enum", enumType));
-            }
-            this.enumType = typeof(TTargetType);
-            this.ignoreCase = ignoreCase;
+            _ignoreCase = ignoreCase;
         }
 
         protected override bool InternalConvert(ReadOnlySpan<char> value, out TTargetType result)
         {
-            return Enum.TryParse(value.ToString(), ignoreCase, out result);
+            // as of this writing, there is not yet an overload of Enum.TryParse that takes a span.
+            return Enum.TryParse(value.ToString(), _ignoreCase, out result);
         }
     }
 }

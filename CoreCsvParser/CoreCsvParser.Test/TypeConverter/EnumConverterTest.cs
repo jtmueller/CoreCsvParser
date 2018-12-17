@@ -1,9 +1,8 @@
 ﻿// Copyright (c) Philipp Wagner and Joel Mueller. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-using NUnit.Framework;
-using System;
 using CoreCsvParser.TypeConverter;
+using NUnit.Framework;
 
 namespace CoreCsvParser.Test.TypeConverter
 {
@@ -59,20 +58,6 @@ namespace CoreCsvParser.Test.TypeConverter
         protected override string?[] FailTestData
         {
             get { return new[] { "B", " ", string.Empty, null }; }
-        }
-    }
-
-    [TestFixture]
-    public class EnumConverterGeneralTest
-    {
-        private struct NoEnum 
-        {
-        }
-
-        [Test]
-        public void CouldNotInstantiateNonEnumTest()
-        {
-            Assert.Throws<ArgumentException>(() => new EnumConverter<NoEnum>());
         }
     }
 }

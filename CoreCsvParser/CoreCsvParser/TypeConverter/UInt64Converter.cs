@@ -6,7 +6,7 @@ using System.Globalization;
 
 namespace CoreCsvParser.TypeConverter
 {
-    public class UInt64Converter : NonNullableConverter<UInt64>
+    public class UInt64Converter : NonNullableConverter<ulong>
     {
         private readonly IFormatProvider formatProvider;
         private readonly NumberStyles numberStyles;
@@ -27,9 +27,9 @@ namespace CoreCsvParser.TypeConverter
             this.numberStyles = numberStyles;
         }
 
-        protected override bool InternalConvert(ReadOnlySpan<char> value, out UInt64 result)
+        protected override bool InternalConvert(ReadOnlySpan<char> value, out ulong result)
         {
-            return UInt64.TryParse(value, numberStyles, formatProvider, out result);
+            return ulong.TryParse(value, numberStyles, formatProvider, out result);
         }
     }
 }

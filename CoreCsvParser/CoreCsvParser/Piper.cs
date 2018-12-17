@@ -66,7 +66,7 @@ namespace CoreCsvParser
                     {
                         // Request a minimum of 512 bytes from the PipeWriter
                         var memory = writer.GetMemory(minimumBufferSize);
-                        int bytesRead = await fileStream.ReadAsync(memory);
+                        int bytesRead = await fileStream.ReadAsync(memory, ct);
                         if (bytesRead == 0)
                             break;
 

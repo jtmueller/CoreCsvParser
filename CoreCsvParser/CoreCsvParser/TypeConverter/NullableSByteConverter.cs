@@ -6,7 +6,7 @@ using System.Globalization;
 
 namespace CoreCsvParser.TypeConverter
 {
-    public class NullableSByteConverter : NullableInnerConverter<SByte>
+    public class NullableSByteConverter : NullableInnerConverter<sbyte>
     {
         public NullableSByteConverter()
             : base(new SByteConverter())

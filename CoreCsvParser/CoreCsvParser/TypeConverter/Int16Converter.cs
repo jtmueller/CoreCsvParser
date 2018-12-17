@@ -6,7 +6,7 @@ using System.Globalization;
 
 namespace CoreCsvParser.TypeConverter
 {
-    public class Int16Converter : NonNullableConverter<Int16>
+    public class Int16Converter : NonNullableConverter<short>
     {
         private readonly IFormatProvider formatProvider;
         private readonly NumberStyles numberStyles;
@@ -27,9 +27,9 @@ namespace CoreCsvParser.TypeConverter
             this.numberStyles = numberStyles;
         }
 
-        protected override bool InternalConvert(ReadOnlySpan<char> value, out Int16 result)
+        protected override bool InternalConvert(ReadOnlySpan<char> value, out short result)
         {
-            return Int16.TryParse(value, numberStyles, formatProvider, out result);
+            return short.TryParse(value, numberStyles, formatProvider, out result);
         }
     }
 }

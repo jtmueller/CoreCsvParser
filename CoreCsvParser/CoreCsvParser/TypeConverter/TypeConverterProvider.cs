@@ -50,12 +50,10 @@ namespace CoreCsvParser.TypeConverter
 
         public TypeConverterProvider Add<TTargetType>(ITypeConverter<TTargetType> typeConverter)
         {
-            if (typeConverters.ContainsKey(typeConverter.TargetType))
+            if (!typeConverters.TryAdd(typeConverter.TargetType, typeConverter))
             {
-                throw new CsvTypeConverterAlreadyRegisteredException(string.Format("Duplicate TypeConverter registration for Type {0}", typeConverter.TargetType));
+                throw new CsvTypeConverterAlreadyRegisteredException($"Duplicate TypeConverter registration for Type {typeConverter.TargetType}.");
             }
-
-            typeConverters[typeConverter.TargetType] = typeConverter;
 
             return this;
         }
@@ -66,7 +64,7 @@ namespace CoreCsvParser.TypeConverter
 
             if (!typeConverters.TryGetValue(targetType, out ITypeConverter typeConverter))
             {
-                throw new CsvTypeConverterNotRegisteredException(string.Format("No TypeConverter registered for Type {0}", targetType));
+                throw new CsvTypeConverterNotRegisteredException($"No TypeConverter registered for Type {targetType}.");
             }
 
             return (ITypeConverter<TTargetType>)typeConverter;

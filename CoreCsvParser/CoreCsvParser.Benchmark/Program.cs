@@ -1,11 +1,11 @@
 ﻿using BenchmarkDotNet.Attributes;
 using BenchmarkDotNet.Running;
+using CoreCsvParser.Mapping;
+using CoreCsvParser.TypeConverter;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using CoreCsvParser.Mapping;
-using CoreCsvParser.TypeConverter;
 using System.Threading.Tasks;
 
 namespace CoreCsvParser.Benchmark

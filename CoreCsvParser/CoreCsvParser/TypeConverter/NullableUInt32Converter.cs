@@ -6,7 +6,7 @@ using System.Globalization;
 
 namespace CoreCsvParser.TypeConverter
 {
-    public class NullableUInt32Converter : NullableInnerConverter<UInt32>
+    public class NullableUInt32Converter : NullableInnerConverter<uint>
     {
         public NullableUInt32Converter()
             : base(new UInt32Converter())

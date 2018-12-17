@@ -41,22 +41,12 @@ namespace CoreCsvParser.Reflection
             return memberExpression;
         }
 
-        public static bool IsEnum(Type type)
-        {
-#if NETSTANDARD1_3
-            return typeof(Enum).GetTypeInfo().IsAssignableFrom(type.GetTypeInfo());
-            
-#else 
-            return typeof(Enum).IsAssignableFrom(type);
-#endif
-        }
-
         public static Action<TEntity, TProperty> CreateSetter<TEntity, TProperty>(Expression<Func<TEntity, TProperty>> property)
         {
-            PropertyInfo propertyInfo = ReflectionUtils.GetProperty(property);
+            var propertyInfo = GetProperty(property);
 
-            ParameterExpression instance = Expression.Parameter(typeof(TEntity), "instance");
-            ParameterExpression parameter = Expression.Parameter(typeof(TProperty), "param");
+            var instance = Expression.Parameter(typeof(TEntity), "instance");
+            var parameter = Expression.Parameter(typeof(TProperty), "param");
 
 #if NETSTANDARD1_3
             return Expression.Lambda<Action<TEntity, TProperty>>(
@@ -72,7 +62,6 @@ namespace CoreCsvParser.Reflection
         public static string GetPropertyNameFromExpression<TEntity, TProperty>(Expression<Func<TEntity, TProperty>> expression)
         {
             var member = GetMemberExpression(expression).Member;
-
             return member.Name;
         }
     }

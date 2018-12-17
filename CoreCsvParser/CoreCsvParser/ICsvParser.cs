@@ -16,15 +16,15 @@ namespace CoreCsvParser
     {
         IEnumerable<CsvMappingResult<TEntity>> Parse(IEnumerable<string> csvData, CancellationToken? ct = null);
 
-        IAsyncEnumerable<CsvMappingResult<TEntity>> ParseAsync(IAsyncEnumerable<string> csvData, CancellationToken? ct = null);
+        IAsyncEnumerable<CsvMappingResult<TEntity>> ParseAsync(IAsyncEnumerable<string> csvData, CancellationToken ct = default);
 
         IEnumerable<CsvMappingResult<TEntity>> Parse(Stream csvData);
 
-        IAsyncEnumerable<CsvMappingResult<TEntity>> ParseAsync(Stream stream, Encoding encoding, CancellationToken? ct = null);
+        IAsyncEnumerable<CsvMappingResult<TEntity>> ParseAsync(Stream stream, Encoding encoding, CancellationToken ct = default);
 
         CsvMappingEnumerable<TEntity> Parse(in SpanSplitEnumerable csvData);
 
-        IAsyncEnumerable<CsvMappingResult<TEntity>> ParseAsync(PipeReader reader, Encoding encoding, CancellationToken? ct = null);
+        IAsyncEnumerable<CsvMappingResult<TEntity>> ParseAsync(PipeReader reader, Encoding encoding, CancellationToken ct = default);
     }
 
     public readonly ref struct CsvMappingEnumerable<T> where T : new()
