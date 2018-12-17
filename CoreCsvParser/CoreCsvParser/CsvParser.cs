@@ -53,7 +53,7 @@ namespace CoreCsvParser
         /// </summary>
         /// <param name="csvData">The CSV data to parse.</param>
         /// <param name="ct">When <see cref="CsvParserOptions.DegreeOfParallelism"/> is greater than one, this optional parameter allows cancellation of the parallel queries.</param>
-        public IEnumerable<CsvMappingResult<TEntity>> Parse(IEnumerable<string> csvData, CancellationToken? ct = null)
+        public IEnumerable<CsvMappingResult<TEntity>> Parse(IEnumerable<string> csvData, CancellationToken ct = default)
         {
             if (csvData is null)
                 throw new ArgumentNullException(nameof(csvData));
@@ -64,10 +64,7 @@ namespace CoreCsvParser
 
             if (Options.DegreeOfParallelism > 1)
             {
-                var parallelQuery = query.AsParallel();
-
-                if (ct.HasValue)
-                    parallelQuery = parallelQuery.WithCancellation(ct.Value);
+                var parallelQuery = query.AsParallel().WithCancellation(ct);
 
                 // If you want to get the same order as in the CSV file, this option needs to be set:
                 if (Options.KeepOrder)
