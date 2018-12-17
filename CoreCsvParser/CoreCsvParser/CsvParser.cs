@@ -4,7 +4,10 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.IO.Pipelines;
 using System.Linq;
+using System.Text;
+using System.Threading;
 using CoreCsvParser.Mapping;
 
 namespace CoreCsvParser
@@ -40,7 +43,17 @@ namespace CoreCsvParser
             return Parse(read());
         }
 
-        public IEnumerable<CsvMappingResult<TEntity>> Parse(IEnumerable<string> csvData)
+        public IAsyncEnumerable<CsvMappingResult<TEntity>> ParseAsync(Stream stream, Encoding encoding, CancellationToken? ct = null)
+        {
+            return Piper.PipeStream(stream, encoding, this, ct ?? CancellationToken.None);
+        }
+
+        /// <summary>
+        ///     Parses a sequence of strings into a sequence of mapped entities.
+        /// </summary>
+        /// <param name="csvData">The CSV data to parse.</param>
+        /// <param name="ct">When <see cref="CsvParserOptions.DegreeOfParallelism"/> is greater than one, this optional parameter allows cancellation of the parallel queries.</param>
+        public IEnumerable<CsvMappingResult<TEntity>> Parse(IEnumerable<string> csvData, CancellationToken? ct = null)
         {
             if (csvData is null)
                 throw new ArgumentNullException(nameof(csvData));
@@ -52,6 +65,9 @@ namespace CoreCsvParser
             if (Options.DegreeOfParallelism > 1)
             {
                 var parallelQuery = query.AsParallel();
+
+                if (ct.HasValue)
+                    parallelQuery = parallelQuery.WithCancellation(ct.Value);
 
                 // If you want to get the same order as in the CSV file, this option needs to be set:
                 if (Options.KeepOrder)
@@ -70,14 +86,42 @@ namespace CoreCsvParser
                 query = query.Where(x => !x.line.StartsWith(Options.CommentCharacter));
             }
 
-            var tokenizer = Options.Tokenizer;
-
             return query.Select(x => ParseLine(x.line, x.index));
+        }
+
+        public async IAsyncEnumerable<CsvMappingResult<TEntity>> ParseAsync(IAsyncEnumerable<string> csvData, CancellationToken? ct = null)
+        {
+            if (csvData is null)
+                throw new ArgumentNullException(nameof(csvData));
+
+            var index = 0;
+            var hasCommentChar = !string.IsNullOrWhiteSpace(Options.CommentCharacter);
+
+            await foreach (var line in csvData)
+            {
+                if (ct?.IsCancellationRequested == true)
+                    break;
+
+                if ((index == 0 && Options.SkipHeader) 
+                    || string.IsNullOrWhiteSpace(line)
+                    || (hasCommentChar && line.StartsWith(Options.CommentCharacter)))
+                {
+                    index++;
+                    continue;
+                }
+
+                yield return ParseLine(line, index++);
+            }
         }
 
         public CsvMappingEnumerable<TEntity> Parse(in SpanSplitEnumerable csvData)
         {
             return new CsvMappingEnumerable<TEntity>(Options, _mapping, in csvData);
+        }
+
+        public IAsyncEnumerable<CsvMappingResult<TEntity>> ParseAsync(PipeReader reader, Encoding encoding, CancellationToken? ct = null)
+        {
+            return Piper.EnumeratePipeAsync(reader, encoding, this, ct ?? CancellationToken.None);
         }
 
         public CsvMappingResult<TEntity> ParseLine(ReadOnlySpan<char> line, int lineNum)
@@ -88,5 +132,6 @@ namespace CoreCsvParser
 
         public override string ToString() =>
             $"CsvParser (Options = {Options}, Mapping = {_mapping})";
+
     }
 }

@@ -4,6 +4,9 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.IO.Pipelines;
+using System.Text;
+using System.Threading;
 using CoreCsvParser.Mapping;
 
 namespace CoreCsvParser
@@ -11,11 +14,17 @@ namespace CoreCsvParser
     public interface ICsvParser<TEntity>
         where TEntity : new()
     {
-        IEnumerable<CsvMappingResult<TEntity>> Parse(IEnumerable<string> csvData);
+        IEnumerable<CsvMappingResult<TEntity>> Parse(IEnumerable<string> csvData, CancellationToken? ct = null);
+
+        IAsyncEnumerable<CsvMappingResult<TEntity>> ParseAsync(IAsyncEnumerable<string> csvData, CancellationToken? ct = null);
 
         IEnumerable<CsvMappingResult<TEntity>> Parse(Stream csvData);
 
+        IAsyncEnumerable<CsvMappingResult<TEntity>> ParseAsync(Stream stream, Encoding encoding, CancellationToken? ct = null);
+
         CsvMappingEnumerable<TEntity> Parse(in SpanSplitEnumerable csvData);
+
+        IAsyncEnumerable<CsvMappingResult<TEntity>> ParseAsync(PipeReader reader, Encoding encoding, CancellationToken? ct = null);
     }
 
     public readonly ref struct CsvMappingEnumerable<T> where T : new()

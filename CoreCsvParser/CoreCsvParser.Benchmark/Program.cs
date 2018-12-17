@@ -116,20 +116,22 @@ namespace CoreCsvParser.Benchmark
         public static async Task CompareLoaders()
         {
             // use this in C# interactive to create subsets of the big file with a specific number of rows
-            //void SubsetFile(string baseFilePath, int rows)
-            //{
-            //    var lines = System.IO.File.ReadLines(baseFilePath)
-            //        .Take(rows + 1)
-            //        .Select((ln, i) => i == 0 ? "RowNum," + ln : $"{i},{ln}");
+            /*
+            void SubsetFile(string baseFilePath, int rows)
+            {
+                var lines = System.IO.File.ReadLines(baseFilePath)
+                    .Take(rows + 1)
+                    .Select((ln, i) => i == 0 ? "RowNum," + ln : $"{i},{ln}");
 
-            //    var path = System.IO.Path.GetDirectoryName(baseFilePath);
-            //    var fileName = System.IO.Path.GetFileNameWithoutExtension(baseFilePath) + "-first-" + rows;
-            //    var ext = System.IO.Path.GetExtension(baseFilePath);
+                var path = System.IO.Path.GetDirectoryName(baseFilePath);
+                var fileName = System.IO.Path.GetFileNameWithoutExtension(baseFilePath) + "-first-" + rows;
+                var ext = System.IO.Path.GetExtension(baseFilePath);
 
-            //    var newPath = System.IO.Path.Combine(path, fileName) + ext;
+                var newPath = System.IO.Path.Combine(path, fileName) + ext;
 
-            //    System.IO.File.WriteAllLines(newPath, lines);
-            //}
+                System.IO.File.WriteAllLines(newPath, lines);
+            }
+            */
 
             Console.WriteLine("Starting direct file read...");
             var csvParserOptions = new CsvParserOptions(true, ',', 1, true);

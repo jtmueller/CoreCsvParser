@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.IO.Pipelines;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 // TEMP FIX: (VS 2019 Preview 1)
@@ -41,33 +42,25 @@ namespace CoreCsvParser
     {
         private static readonly char[] CRLF = new[] { '\r', '\n' };
 
-        public static IAsyncEnumerable<CsvMappingResult<T>> EnumerateFile<T>(string path, Encoding encoding, CsvParser<T> parser) where T : new()
-        {
-            return EnumerateStream(File.OpenRead(path), encoding, parser);
-        }
-
-        public static IAsyncEnumerable<CsvMappingResult<T>> EnumerateFile<T>(FileInfo file, Encoding encoding, CsvParser<T> parser) where T : new()
-        {
-            return EnumerateStream(file.OpenRead(), encoding, parser);
-        }
-
-        public static IAsyncEnumerable<CsvMappingResult<T>> EnumerateStream<T>(Stream stream, Encoding encoding, CsvParser<T> parser) where T : new()
+        public static IAsyncEnumerable<CsvMappingResult<T>> 
+            PipeStream<T>(Stream stream, Encoding encoding, CsvParser<T> parser, CancellationToken ct) 
+            where T : new()
         {
             if (stream is null) throw new ArgumentNullException(nameof(stream));
             if (parser is null) throw new ArgumentException(nameof(parser));
 
             var pipe = new Pipe();
-            Task writing = FillPipeAsync(stream, pipe.Writer);
-            return EnumeratePipeAsync(pipe.Reader, encoding, parser);
+            Task writing = FillPipeAsync(stream, pipe.Writer, ct);
+            return EnumeratePipeAsync(pipe.Reader, encoding, parser, ct);
         }
 
-        private static async Task FillPipeAsync(Stream fileStream, PipeWriter writer)
+        private static async Task FillPipeAsync(Stream fileStream, PipeWriter writer, CancellationToken ct)
         {
             const int minimumBufferSize = 512;
 
             using (fileStream)
             {
-                while (true)
+                while (!ct.IsCancellationRequested)
                 {
                     try
                     {
@@ -96,17 +89,19 @@ namespace CoreCsvParser
             }
         }
 
-        private static async IAsyncEnumerable<CsvMappingResult<T>> EnumeratePipeAsync<T>(PipeReader reader, Encoding encoding, CsvParser<T> parser) where T : new()
+        public static async IAsyncEnumerable<CsvMappingResult<T>> 
+            EnumeratePipeAsync<T>(PipeReader reader, Encoding encoding, CsvParser<T> parser, CancellationToken ct)
+            where T : new()
         {
             int lineNum = 0;
-            SequencePosition? position = null;
 
-            while (true)
+            while (!ct.IsCancellationRequested)
             {
                 var result = await reader.ReadAsync();
                 var buffer = result.Buffer;
+                SequencePosition? position = null;
 
-                if (buffer.IsEmpty && result.IsCompleted)
+                if ( buffer.IsEmpty && result.IsCompleted)
                     break;
 
                 do
@@ -133,7 +128,7 @@ namespace CoreCsvParser
                         buffer = buffer.Slice(next);
                     }
                 }
-                while (position != null);
+                while (position != null && !ct.IsCancellationRequested);
 
                 // We sliced the buffer until no more data could be processed
                 // Tell the PipeReader how much we consumed and how much we have left to process
@@ -144,6 +139,9 @@ namespace CoreCsvParser
                     break;
                 }
             }
+
+            // signal to the writer that we're done reading
+            reader.Complete();
         }
 
         private static CsvMappingResult<T>? ProcessLine<T>(in ReadOnlySequence<byte> buffer, Encoding encoding, CsvParser<T> parser, int lineNum) where T : new()

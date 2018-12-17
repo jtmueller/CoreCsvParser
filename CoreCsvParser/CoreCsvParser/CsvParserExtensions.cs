@@ -5,52 +5,52 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
+using System.Threading;
 using CoreCsvParser.Mapping;
 
 namespace CoreCsvParser
 {
     public static class CsvParserExtensions
     {
-        public static IEnumerable<CsvMappingResult<TEntity>> ReadFromFile<TEntity>(this CsvParser<TEntity> csvParser, string fileName, Encoding encoding)
+        public static IEnumerable<CsvMappingResult<TEntity>> ReadFromFile<TEntity>(this ICsvParser<TEntity> csvParser, string fileName, Encoding encoding)
             where TEntity : new()
         {
             if (string.IsNullOrEmpty(fileName))
                 throw new ArgumentNullException(nameof(fileName));
 
             var lines = File.ReadLines(fileName, encoding);
-
             return csvParser.Parse(lines);
         }
 
-        public static CsvMappingEnumerable<TEntity> ReadFromString<TEntity>(this CsvParser<TEntity> csvParser, CsvReaderOptions csvReaderOptions, string csvData)
+        public static CsvMappingEnumerable<TEntity> ReadFromString<TEntity>(this ICsvParser<TEntity> csvParser, CsvReaderOptions csvReaderOptions, string csvData)
             where TEntity : new()
         {
             return ReadFromSpan(csvParser, csvReaderOptions, csvData.AsSpan());
         }
 
-        public static CsvMappingEnumerable<TEntity> ReadFromSpan<TEntity>(this CsvParser<TEntity> csvParser, CsvReaderOptions csvReaderOptions, ReadOnlySpan<char> csvData)
+        public static CsvMappingEnumerable<TEntity> ReadFromSpan<TEntity>(this ICsvParser<TEntity> csvParser, CsvReaderOptions csvReaderOptions, ReadOnlySpan<char> csvData)
             where TEntity : new()
         {
             var parts = csvData.Split(csvReaderOptions.NewLine, StringSplitOptions.RemoveEmptyEntries);
             return csvParser.Parse(parts);
         }
 
-        public static IAsyncEnumerable<CsvMappingResult<TEntity>> ReadFromFileAsync<TEntity>(this CsvParser<TEntity> csvParser, string fileName, Encoding encoding)
+        public static IAsyncEnumerable<CsvMappingResult<TEntity>> ReadFromFileAsync<TEntity>(this ICsvParser<TEntity> csvParser, string fileName, Encoding encoding, CancellationToken? ct = null)
             where TEntity : new()
         {
-            return Piper.EnumerateFile(fileName, encoding, csvParser);
+            if (string.IsNullOrEmpty(fileName))
+                throw new ArgumentNullException(nameof(fileName));
+
+            return csvParser.ParseAsync(File.OpenRead(fileName), encoding);
         }
 
-        public static IAsyncEnumerable<CsvMappingResult<TEntity>> ReadFromFileAsync<TEntity>(this CsvParser<TEntity> csvParser, FileInfo file, Encoding encoding)
+        public static IAsyncEnumerable<CsvMappingResult<TEntity>> ReadFromFileAsync<TEntity>(this ICsvParser<TEntity> csvParser, FileInfo file, Encoding encoding, CancellationToken? ct = null)
             where TEntity : new()
         {
-            return Piper.EnumerateFile(file, encoding, csvParser);
-        }
+            if (file is null)
+                throw new ArgumentNullException(nameof(file));
 
-        public static IAsyncEnumerable<CsvMappingResult<TEntity>> ReadFromStreamAsync<TEntity>(this CsvParser<TEntity> csvParser, Stream stream, Encoding encoding)
-            where TEntity : new()
-        {
-            return Piper.EnumerateStream(stream, encoding, csvParser);
+            return csvParser.ParseAsync(file.OpenRead(), encoding);
         }
     }
 }
