@@ -2,6 +2,7 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using CoreCsvParser.Mapping;
+using CoreCsvParser.Tokenizer;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -15,10 +16,12 @@ namespace CoreCsvParser
     public class CsvParser<TEntity> : ICsvParser<TEntity> where TEntity : new()
     {
         private readonly CsvMapping<TEntity> _mapping;
+        private readonly ITokenizer _tokenizer;
 
         public CsvParser(CsvParserOptions options, CsvMapping<TEntity> mapping)
         {
             Options = options;
+            _tokenizer = options.Tokenizer;
             _mapping = mapping;
         }
 
@@ -64,7 +67,7 @@ namespace CoreCsvParser
 
             if (Options.DegreeOfParallelism > 1)
             {
-                var parallelQuery = query.AsParallel().WithCancellation(ct);
+                var parallelQuery = query.AsParallel();
 
                 // If you want to get the same order as in the CSV file, this option needs to be set:
                 if (Options.KeepOrder)
@@ -72,7 +75,7 @@ namespace CoreCsvParser
                     parallelQuery = parallelQuery.AsOrdered();
                 }
 
-                query = parallelQuery.WithDegreeOfParallelism(Options.DegreeOfParallelism);
+                query = parallelQuery.WithDegreeOfParallelism(Options.DegreeOfParallelism).WithCancellation(ct);
             }
 
             query = query.Where(x => !string.IsNullOrWhiteSpace(x.line));
@@ -123,8 +126,8 @@ namespace CoreCsvParser
 
         public CsvMappingResult<TEntity> ParseLine(ReadOnlySpan<char> line, int lineNum)
         {
-            var tokens = Options.Tokenizer.Tokenize(line);
-            return _mapping.Map(tokens, lineNum);
+            var tokens = _tokenizer.Tokenize(line);
+            return _mapping.Map(in tokens, lineNum);
         }
 
         public override string ToString() =>

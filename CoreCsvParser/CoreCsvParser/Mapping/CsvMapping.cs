@@ -50,7 +50,7 @@ namespace CoreCsvParser.Mapping
             return propertyMapping;
         }
 
-        public CsvMappingResult<TEntity> Map(TokenEnumerable tokens, int rowIndex)
+        public CsvMappingResult<TEntity> Map(in TokenEnumerable tokens, int rowIndex)
         {
             TEntity entity = new TEntity();
 
@@ -89,7 +89,6 @@ namespace CoreCsvParser.Mapping
         public override string ToString()
         {
             var csvPropertyMappingsString = string.Join(", ", _csvPropertyMappings.Select(x => x.ToString()));
-
             return $"CsvMapping (TypeConverterProvider = {_typeConverterProvider}, Mappings = {csvPropertyMappingsString})";
         }
     }

@@ -94,6 +94,7 @@ namespace CoreCsvParser
             where T : new()
         {
             int lineNum = 0;
+            byte EOL = (byte)'\n';
 
             while (!ct.IsCancellationRequested)
             {
@@ -101,13 +102,13 @@ namespace CoreCsvParser
                 var buffer = result.Buffer;
                 SequencePosition? position = null;
 
-                if ( buffer.IsEmpty && result.IsCompleted)
+                if (buffer.IsEmpty && result.IsCompleted)
                     break;
 
                 do
                 {
                     // Find the EOL
-                    position = buffer.PositionOf((byte)'\n');
+                    position = buffer.PositionOf(EOL);
 
                     if (position != null)
                     {
@@ -115,7 +116,7 @@ namespace CoreCsvParser
 
                         if (lineNum > 0 || !parser.Options.SkipHeader)
                         {
-                            var parsed = ProcessLine(line, encoding, parser, lineNum);
+                            var parsed = ProcessLine(in line, encoding, parser, lineNum);
                             if (parsed.HasValue)
                                 yield return parsed.Value;
                         }
@@ -156,7 +157,7 @@ namespace CoreCsvParser
                 using (var chrMem = pool.Rent(maxChars))
                 {
                     var chars = chrMem.Memory.Span;
-                    len += encoding.GetChars(bytes, chars);
+                    len = encoding.GetChars(bytes, chars);
                     return ParseLine(parser, lineNum, chars[..len]);
                 }
             }
@@ -179,7 +180,7 @@ namespace CoreCsvParser
 
         private static CsvMappingResult<T>? ParseLine<T>(CsvParser<T> parser, int lineNum, ReadOnlySpan<char> line) where T : new()
         {
-            if (line.IsEmpty)
+            if (line.IsWhiteSpace())
                 return null;
 
             ReadOnlySpan<char> commentChar = parser.Options.CommentCharacter;

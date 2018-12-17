@@ -77,7 +77,6 @@ namespace CoreCsvParser.Tokenizer
         public override string ToString()
         {
             var columnDefinitionsString = string.Join(", ", _columns.Select(x => x.ToString()));
-
             return $"FixedLengthTokenizer (Columns = [{columnDefinitionsString}])";
         }
     }
