@@ -10,6 +10,7 @@ using System.IO.Pipelines;
 using System.Linq;
 using System.Text;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace CoreCsvParser
 {
@@ -112,7 +113,7 @@ namespace CoreCsvParser
             var index = 0;
             var hasCommentChar = !string.IsNullOrWhiteSpace(Options.CommentCharacter);
 
-            await foreach (var line in csvData)
+            await foreach (var line in csvData) // .ConfigureAwait(false) doesn't seem to work in Preview 1
             {
                 if (ct.IsCancellationRequested)
                     break;

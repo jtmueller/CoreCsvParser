@@ -50,11 +50,11 @@ namespace CoreCsvParser
             if (parser is null) throw new ArgumentNullException(nameof(parser));
 
             var pipe = new Pipe();
-            Task writing = FillPipeAsync(stream, pipe.Writer, ct);
+            var filling = FillPipeAsync(stream, pipe.Writer, ct);
             return EnumeratePipeAsync(pipe.Reader, encoding, parser, ct);
         }
 
-        private static async Task FillPipeAsync(Stream fileStream, PipeWriter writer, CancellationToken ct)
+        private static async ValueTask FillPipeAsync(Stream fileStream, PipeWriter writer, CancellationToken ct)
         {
             const int minimumBufferSize = 512;
 
@@ -66,7 +66,7 @@ namespace CoreCsvParser
                     {
                         // Request a minimum of 512 bytes from the PipeWriter
                         var memory = writer.GetMemory(minimumBufferSize);
-                        int bytesRead = await fileStream.ReadAsync(memory, ct);
+                        int bytesRead = await fileStream.ReadAsync(memory, ct).ConfigureAwait(false);
                         if (bytesRead == 0)
                             break;
 
@@ -79,7 +79,7 @@ namespace CoreCsvParser
                     }
 
                     // Make the data available to the PipeReader
-                    var result = await writer.FlushAsync();
+                    var result = await writer.FlushAsync().ConfigureAwait(false);
                     if (result.IsCompleted)
                         break;
                 }
@@ -98,7 +98,7 @@ namespace CoreCsvParser
 
             while (!ct.IsCancellationRequested)
             {
-                var result = await reader.ReadAsync();
+                var result = await reader.ReadAsync().ConfigureAwait(false);
                 var buffer = result.Buffer;
 
                 if (buffer.IsEmpty && result.IsCompleted)
