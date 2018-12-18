@@ -9,7 +9,7 @@ in .NET Core 2.1 for in some cases dramatically improved performance and much lo
 
 To get started quickly, follow the [Quickstart](http://bytefish.github.io/TinyCsvParser/sections/quickstart.html).
 
-[CoreCsvParser] requries .NET Core 2.1 (or .NET Standard 1.3 when that comes out).
+[CoreCsvParser] requries .NET Core 3.x (or .NET Standard 2.1+ when that comes out).
 
 ## Basic Usage ##
 

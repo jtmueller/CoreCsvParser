@@ -47,7 +47,7 @@ namespace CoreCsvParser
             where T : new()
         {
             if (stream is null) throw new ArgumentNullException(nameof(stream));
-            if (parser is null) throw new ArgumentException(nameof(parser));
+            if (parser is null) throw new ArgumentNullException(nameof(parser));
 
             var pipe = new Pipe();
             Task writing = FillPipeAsync(stream, pipe.Writer, ct);
@@ -100,36 +100,34 @@ namespace CoreCsvParser
             {
                 var result = await reader.ReadAsync();
                 var buffer = result.Buffer;
-                SequencePosition? position = null;
 
                 if (buffer.IsEmpty && result.IsCompleted)
                     break;
 
-                do
+                // find the first EOL
+                var position = buffer.PositionOf(EOL);
+
+                while (position.HasValue)
                 {
-                    // Find the EOL
-                    position = buffer.PositionOf(EOL);
+                    var line = buffer.Slice(0, position.Value);
 
-                    if (position != null)
+                    if (lineNum > 0 || !parser.Options.SkipHeader)
                     {
-                        var line = buffer.Slice(0, position.Value);
-
-                        if (lineNum > 0 || !parser.Options.SkipHeader)
-                        {
-                            var parsed = ProcessLine(in line, encoding, parser, lineNum);
-                            if (parsed.HasValue)
-                                yield return parsed.Value;
-                        }
-                        lineNum++;
-
-                        // This is equivalent to position + 1
-                        var next = buffer.GetPosition(1, position.Value);
-
-                        // Skip what we've already processed including \n
-                        buffer = buffer.Slice(next);
+                        var parsed = ProcessLine(in line, encoding, parser, lineNum);
+                        if (parsed.HasValue)
+                            yield return parsed.Value;
                     }
+                    lineNum++;
+
+                    // This is equivalent to position + 1
+                    var next = buffer.GetPosition(1, position.Value);
+
+                    // Skip what we've already processed including \n
+                    buffer = buffer.Slice(next);
+
+                    // Find the next EOL
+                    position = buffer.PositionOf(EOL);
                 }
-                while (position != null && !ct.IsCancellationRequested);
 
                 // We sliced the buffer until no more data could be processed
                 // Tell the PipeReader how much we consumed and how much we have left to process

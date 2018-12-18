@@ -12,12 +12,11 @@ namespace CoreCsvParser.Reflection
         public static PropertyInfo GetProperty<TEntity, TProperty>(Expression<Func<TEntity, TProperty>> expression)
         {
             var member = GetMemberExpression(expression).Member;
-            var property = member as PropertyInfo;
-            if (property == null)
+            if (member is PropertyInfo property)
             {
-                throw new InvalidOperationException($"Member with Name '{member.Name}' is not a property.");
+                return property;
             }
-            return property;
+            throw new InvalidOperationException($"Member with Name '{member?.Name}' is not a property.");
         }
 
         private static MemberExpression GetMemberExpression<TEntity, TProperty>(Expression<Func<TEntity, TProperty>> expression)
@@ -35,7 +34,7 @@ namespace CoreCsvParser.Reflection
 
             if (memberExpression == null)
             {
-                throw new ArgumentException("Not a member access", "expression");
+                throw new ArgumentException("Not a member access", nameof(expression));
             }
 
             return memberExpression;
@@ -48,15 +47,10 @@ namespace CoreCsvParser.Reflection
             var instance = Expression.Parameter(typeof(TEntity), "instance");
             var parameter = Expression.Parameter(typeof(TProperty), "param");
 
-#if NETSTANDARD1_3
-            return Expression.Lambda<Action<TEntity, TProperty>>(
-                Expression.Call(instance, propertyInfo.SetMethod, parameter),
-                new ParameterExpression[] { instance, parameter }).Compile();
-#else
             return Expression.Lambda<Action<TEntity, TProperty>>(
                 Expression.Call(instance, propertyInfo.GetSetMethod(), parameter),
-                new ParameterExpression[] { instance, parameter }).Compile();
-#endif
+                instance, parameter
+            ).Compile();
         }
 
         public static string GetPropertyNameFromExpression<TEntity, TProperty>(Expression<Func<TEntity, TProperty>> expression)

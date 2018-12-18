@@ -38,15 +38,11 @@ namespace CoreCsvParser.Benchmark
             return false;
         }
 
-        public override int GetHashCode()
-        {
-            return 17 ^ RowNum.GetHashCode() ^ (WBAN?.GetHashCode() ?? 0) ^ Date.GetHashCode() ^ (SkyCondition?.GetHashCode() ?? 0);
-        }
+        public override int GetHashCode() =>
+            HashCode.Combine(RowNum, WBAN, Date, SkyCondition);
 
-        public override string ToString()
-        {
-            return $"{RowNum}: {Date}, {WBAN}, {SkyCondition}";
-        }
+        public override string ToString() =>
+            $"{RowNum}: {Date}, {WBAN}, {SkyCondition}";
     }
 
     public class LocalWeatherDataMapper : CsvMapping<LocalWeatherData>

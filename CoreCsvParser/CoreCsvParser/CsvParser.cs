@@ -27,14 +27,24 @@ namespace CoreCsvParser
 
         public CsvParserOptions Options { get; }
 
-        public IEnumerable<CsvMappingResult<TEntity>> Parse(Stream csvData)
+        /// <summary>
+        ///     Parses from a <see cref="Stream"/> using UTF8 Encoding.
+        /// </summary>
+        public IEnumerable<CsvMappingResult<TEntity>> Parse(Stream csvData) => Parse(csvData, Encoding.UTF8);
+
+        /// <summary>
+        ///     Parses from a <see cref="Stream"/>.
+        /// </summary>
+        public IEnumerable<CsvMappingResult<TEntity>> Parse(Stream csvData, Encoding encoding)
         {
             if (csvData is null)
                 throw new ArgumentNullException(nameof(csvData));
+            if (encoding is null)
+                throw new ArgumentNullException(nameof(encoding));
 
             IEnumerable<string> read()
             {
-                using (var reader = new StreamReader(csvData))
+                using (var reader = new StreamReader(csvData, encoding))
                 {
                     while (!reader.EndOfStream)
                     {
@@ -46,10 +56,29 @@ namespace CoreCsvParser
             return Parse(read());
         }
 
-        public IAsyncEnumerable<CsvMappingResult<TEntity>> ParseAsync(Stream stream, Encoding encoding, CancellationToken ct = default)
-        {
-            return Piper.PipeStream(stream, encoding, this, ct);
-        }
+        /// <summary>
+        ///     Parses from a <see cref="Stream"/> with UTF8 encoding, asynchronously using Pipelines for low memory allocation.
+        /// </summary>
+        public IAsyncEnumerable<CsvMappingResult<TEntity>> ParseAsync(Stream stream, CancellationToken ct = default) =>
+            Piper.PipeStream(stream, Encoding.UTF8, this, ct);
+
+        /// <summary>
+        ///     Parses from a <see cref="Stream"/> asynchronously using Pipelines for low memory allocation.
+        /// </summary>
+        public IAsyncEnumerable<CsvMappingResult<TEntity>> ParseAsync(Stream stream, Encoding encoding, CancellationToken ct = default) =>
+            Piper.PipeStream(stream, encoding, this, ct);
+
+        /// <summary>
+        ///     Parses from a <see cref="PipeReader"/> asynchronously using UTF8 Encoding.
+        /// </summary>
+        public IAsyncEnumerable<CsvMappingResult<TEntity>> ParseAsync(PipeReader reader, CancellationToken ct = default) =>
+            Piper.EnumeratePipeAsync(reader, Encoding.UTF8, this, ct);
+
+        /// <summary>
+        ///     Parses from a <see cref="PipeReader"/> asynchronously.
+        /// </summary>
+        public IAsyncEnumerable<CsvMappingResult<TEntity>> ParseAsync(PipeReader reader, Encoding encoding, CancellationToken ct = default) =>
+            Piper.EnumeratePipeAsync(reader, encoding, this, ct);
 
         /// <summary>
         ///     Parses a sequence of strings into a sequence of mapped entities.
@@ -105,11 +134,6 @@ namespace CoreCsvParser
             return new CsvMappingEnumerable<TEntity>(Options, _mapping, in csvData);
         }
 
-        public IAsyncEnumerable<CsvMappingResult<TEntity>> ParseAsync(PipeReader reader, Encoding encoding, CancellationToken ct = default)
-        {
-            return Piper.EnumeratePipeAsync(reader, encoding, this, ct);
-        }
-
         public CsvMappingResult<TEntity> ParseLine(ReadOnlySpan<char> line, int lineNum)
         {
             var tokens = _tokenizer.Tokenize(line);
@@ -118,6 +142,5 @@ namespace CoreCsvParser
 
         public override string ToString() =>
             $"CsvParser (Options = {Options}, Mapping = {_mapping})";
-
     }
 }

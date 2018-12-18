@@ -9,7 +9,7 @@
     <PackageTags>csv, parser, csvparser</PackageTags>
     <RepositoryUrl>git://github.com/bytefish/TinyCsvParser</RepositoryUrl>
     <PackageProjectUrl>https://github.com/bytefish/TinyCsvParser</PackageProjectUrl>
-    <PackageLicenseUrl>https://opensource.org/licenses/MIT</PackageLicenseUrl>
+    <PackageLicense>https://opensource.org/licenses/MIT</PackageLicense>
     <Copyright>Copyright © 2017 Philipp Wagner</Copyright>
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
     <AssemblyVersion>3.0.0.0</AssemblyVersion>
@@ -21,23 +21,6 @@
     <LangVersion>8.0</LangVersion>
     <TieredCompilation>true</TieredCompilation>
     <NullableReferenceTypes>true</NullableReferenceTypes>
-  </PropertyGroup>
-
-  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net45|x64'" />
-
-  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|netcoreapp2.1|AnyCPU'">
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-  </PropertyGroup>
-
-  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|netcoreapp2.1|AnyCPU'">
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-  </PropertyGroup>
-
-  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|netcoreapp3.0|AnyCPU'">
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-  </PropertyGroup>
-
-  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|netcoreapp3.0|AnyCPU'">
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
 

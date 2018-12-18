@@ -10,10 +10,6 @@ using System.Linq.Expressions;
 
 namespace CoreCsvParser.Mapping
 {
-    // TODO: Support for immutable records:
-    // Types with no default constructor, but do have constructors with a 1:1 match params to property names (case-insensitive)
-    // Properties are not set, but property values are passed into constructor. (Test with F# records)
-
     public abstract class CsvMapping<TEntity> where TEntity : new()
     {
         private readonly ITypeConverterProvider _typeConverterProvider;
